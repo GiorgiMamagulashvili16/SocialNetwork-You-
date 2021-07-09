@@ -1,7 +1,17 @@
 package com.example.you.ui.fragments.addpost
 
-import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import com.example.you.databinding.AddPostFragmentBinding
+import com.example.you.ui.base.BaseFragment
 
-class AddPostFragment : Fragment() {
+class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBinding::inflate) {
 
+    override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
+        init()
+    }
+
+    private fun init() {
+
+    }
 }
