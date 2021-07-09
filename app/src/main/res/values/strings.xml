@@ -7,4 +7,9 @@
     <string name="profile">Profile</string>
     <string name="add_post">Add Post</string>
     <string name="log_out">Log Out</string>
+    <string name="write_your_post">Write your post</string>
+    <string name="what_s_on_you_mind">What\'s On You Mind?</string>
+    <string name="post">Post</string>
+    <string name="add_a_picture">+ Add A Picture</string>
+
 </resources>
