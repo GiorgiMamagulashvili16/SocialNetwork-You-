@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">You</string>
     <string name="view_comments">View Comments</string>
+    <string name="news_feed">News Feed</string>
+    <string name="nearby_posts">Nearby Posts</string>
+    <string name="search">Search</string>
+    <string name="profile">Profile</string>
+    <string name="add_post">Add Post</string>
+    <string name="log_out">Log Out</string>
 </resources>

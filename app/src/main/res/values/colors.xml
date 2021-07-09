@@ -10,4 +10,5 @@
     <color name="bg_main_button">#7E44D6</color>
     <color name="bg_main">#1E1E2A</color>
     <color name="gray">#828282</color>
+    <color name="icon_color">#B492E8</color>
 </resources>
