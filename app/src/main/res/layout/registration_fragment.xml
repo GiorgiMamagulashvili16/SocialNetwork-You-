@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none"
+    tools:context=".ui.signupfragment.Registration" >
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background=" #1E1E2A"
+        android:orientation="vertical"
+        tools:context=".auth.Registration">
+
+        <TextView
+            android:layout_marginTop="45dp"
+            android:id="@+id/textView"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign Up"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp" />
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_marginTop="25dp"
+            android:id="@+id/PickedPicture"
+            android:layout_gravity="center"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:background="@drawable/ic_ellipse_1"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/circular"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_marginTop="73dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginBottom="24dp"
+            app:hintTextColor="@color/white"
+            app:boxStrokeColor="#B492E8"
+            app:boxStrokeWidthFocused="2dp"
+            android:layout_height="wrap_content"
+            android:textColorHint="#828282"
+            android:hint="Email">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/Email"
+                android:layout_width="match_parent"
+                android:textColor="@color/white"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+
+            app:hintTextColor="@color/white"
+            android:textColorHint="#828282"
+            app:boxStrokeColor="#B492E8"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/UserName"
+                android:layout_width="match_parent"
+                android:textColor="@color/white"
+                android:layout_height="wrap_content" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+
+            app:hintTextColor="@color/white"
+            android:textColorHint="#828282"
+            app:boxStrokeColor="#B492E8"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/Password"
+                android:layout_width="match_parent"
+                android:textColor="@color/white"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            app:hintTextColor="@color/white"
+            app:boxStrokeColor="#B492E8"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:textColorHint="#828282"
+            android:layout_height="wrap_content"
+            android:hint="Repeat Password">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/repeatPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:src="@drawable/ic_have_an_account__sign_in"
+            android:id="@+id/toSignIN"
+            android:layout_gravity="center"
+            android:layout_width="158dp"
+            android:layout_height="18dp"/>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/Register"
+            android:layout_marginTop="50dp"
+            android:layout_width="279dp"
+            android:layout_height="60dp"
+            android:text="Sign up"
+            android:textAllCaps="false"
+            app:cornerRadius="8dp"
+            android:layout_marginBottom="46dp"
+            android:layout_gravity="center"
+            />
+
+
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+    
+</ScrollView>
