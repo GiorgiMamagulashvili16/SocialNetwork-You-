@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/dashboardFragment">
+
+    <fragment
+        android:id="@+id/dashboardFragment"
+        android:name="com.example.you.ui.fragments.dashboard.DashboardFragment"
+        android:label="dashboard_fragment"
+        tools:layout="@layout/dashboard_fragment" />
+    <include app:graph="@navigation/dashboard_nav_graph" />
+</navigation>

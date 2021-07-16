@@ -1,7 +1,15 @@
 <resources>
     <string name="app_name">You</string>
-    <string name="sign_up">Sign Up</string>
-    <string name="username">Username</string>
-    <string name="password">Password</string>
-    <string name="repeat_password">Repeat Password</string>
+    <string name="view_comments">View Comments</string>
+    <string name="news_feed">News Feed</string>
+    <string name="nearby_posts">Nearby Posts</string>
+    <string name="search">Search</string>
+    <string name="profile">Profile</string>
+    <string name="add_post">Add Post</string>
+    <string name="log_out">Log Out</string>
+    <string name="write_your_post">Write your post</string>
+    <string name="what_s_on_you_mind">What\'s On Your Mind?</string>
+    <string name="post">Post</string>
+    <string name="add_a_picture">+ Add A Picture</string>
+
 </resources>
