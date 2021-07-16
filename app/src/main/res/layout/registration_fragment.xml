@@ -7,7 +7,7 @@
     android:fillViewport="true"
     android:overScrollMode="never"
     android:scrollbars="none"
-    tools:context=".ui.signupfragment.Registration" >
+    tools:context=".ui.fragments.auth.signup.RegistrationFragment" >
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign Up"
+            android:text="@string/sign_up"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
             android:textSize="30sp" />
@@ -70,7 +70,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Username">
+            android:hint="@string/username">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/UserName"
@@ -92,7 +92,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password">
+            android:hint="@string/password">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/Password"
@@ -115,7 +115,7 @@
             android:layout_marginBottom="24dp"
             android:textColorHint="#828282"
             android:layout_height="wrap_content"
-            android:hint="Repeat Password">
+            android:hint="@string/repeat_password">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/repeatPassword"
@@ -139,7 +139,7 @@
             android:layout_marginTop="50dp"
             android:layout_width="279dp"
             android:layout_height="60dp"
-            android:text="Sign up"
+            android:text="@string/sign_up"
             android:textAllCaps="false"
             app:cornerRadius="8dp"
             android:layout_marginBottom="46dp"
