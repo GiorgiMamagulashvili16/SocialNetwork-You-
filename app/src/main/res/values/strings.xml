@@ -11,5 +11,23 @@
     <string name="what_s_on_you_mind">What\'s On Your Mind?</string>
     <string name="post">Post</string>
     <string name="add_a_picture">+ Add A Picture</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="email_address">Email address</string>
+    <string name="username">UserName</string>
+    <string name="password">Password</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="please_fill_all_fields">Please Fill All Fields</string>
+    <string name="password_do_not_match">Passwords do not match</string>
+    <string name="welcome">Welcome</string>
+    <string name="sign_in_now">Sign In Now</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="register">Register</string>
+    <string name="sign_in">Sign In</string>
+    <string name="successfully_log_in">Successfully</string>
+    <string name="app_needs_this_permission">App Needs This Permission</string>
+    <string name="ok">OK</string>
+    <string name="please_choose_post_image">Please Choose Post Image</string>
+    <string name="loading">Loading…</string>
+    <string name="please_choose_image">Please choose image</string>
 
 </resources>

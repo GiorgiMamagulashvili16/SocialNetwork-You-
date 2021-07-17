@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="circular">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+    <style name="postImageCornerStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">6%</item>
+    </style>
+    <style name="postProfileImageStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">19%</item>
+    </style>
+    <style name="Progress" parent="Widget.AppCompat.ProgressBar">
+        <item name="colorAccent">@color/icon_color</item> <!-- Whatever color you want-->
+    </style>
+</resources>

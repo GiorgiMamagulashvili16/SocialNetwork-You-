@@ -33,16 +33,20 @@
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent" />
 
-                <de.hdodenhof.circleimageview.CircleImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/ivToolbarProfile"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
+                    android:layout_gravity="center"
                     android:layout_marginEnd="20dp"
                     android:layout_marginRight="20dp"
+                    android:background="@mipmap/user_default_image"
+                    android:scaleType="centerCrop"
                     android:src="@mipmap/ic_launcher"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearanceOverlay="@style/circular" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvToolbarUserName"
@@ -81,7 +85,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/appBarLayout"
-            app:navGraph="@navigation/dashboard_nav_graph" />
+            app:navGraph="@navigation/dashboard_graph" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView
@@ -105,7 +109,7 @@
             android:layout_width="150dp"
             android:layout_height="300dp"
             android:layout_gravity="bottom|center_horizontal"
-            android:src="@drawable/img_girl"/>
+            android:src="@drawable/img_girl" />
     </com.google.android.material.navigation.NavigationView>
 
 

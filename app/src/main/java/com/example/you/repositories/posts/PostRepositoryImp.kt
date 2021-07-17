@@ -1,33 +1,93 @@
 package com.example.you.repositories.posts
 
+import android.location.Location
 import android.net.Uri
 import android.util.Log.d
 import com.example.you.models.post.Post
+import com.example.you.models.user.UserModel
+import com.example.you.util.Constants.POSTS_COLLECTION_NAME
+import com.example.you.util.Constants.USER_COLLECTION_NAME
+import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
+import com.google.firebase.firestore.Query
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import java.util.*
+import javax.inject.Inject
 
-class PostRepositoryImp : PostRepository {
+class PostRepositoryImp @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val storage: FirebaseStorage,
+    private val fireStore: FirebaseFirestore,
+) : PostRepository {
+    private val users = fireStore.collection(USER_COLLECTION_NAME)
+    private val posts = fireStore.collection(POSTS_COLLECTION_NAME)
 
-    private val auth = FirebaseAuth.getInstance()
-    private val firestore = FirebaseFirestore.getInstance()
-    private val posts = firestore.collection("posts")
-    private val storage = Firebase.storage
+    override suspend fun addPost(imageUri: Uri, postText: String): Resource<Any> =
+        withContext(Dispatchers.IO) {
+            try {
+                val uid = auth.currentUser?.uid!!
+                val postId = UUID.randomUUID().toString()
+                val postImageUpl = storage.getReference(postId).putFile(imageUri).await()
+                val postImage = postImageUpl.metadata?.reference?.downloadUrl?.await().toString()
+                val post = Post(
+                    postId = postId,
+                    authorId = uid,
+                    text = postText,
+                    postImageUrl = postImage,
+                    date = System.currentTimeMillis()
+                )
+                posts.document(postId).set(post).await()
+                Resource.Success(Any())
+            } catch (e: Exception) {
+                Resource.Error(e.toString())
+            }
+        }
 
-    override suspend fun addPost(imageUrl: Uri, postText: String) {
-        try {
+    override suspend fun getAllPost(): Resource<List<Post>> = withContext(Dispatchers.IO) {
+        return@withContext try {
             val uid = auth.uid!!
-            val postId = UUID.randomUUID().toString()
-            val imageUpload = storage.getReference(postId).putFile(imageUrl).await()
-            val postImageUrl = imageUpload?.metadata?.reference?.downloadUrl?.await().toString()
-            val post = Post(postId, uid, postText, postImageUrl, data = System.currentTimeMillis())
-            posts.document(postId).set(post).await()
+            d("POSTPOST","$uid")
+            val posts =
+                posts.whereNotEqualTo("authorId", uid)
+                    .get()
+                    .await().toObjects(Post::class.java).onEach {
+                        val user = getUser(it.authorId).data!!
+                        it.apply {
+                            authorUserName = user.userName
+                            authorProfileImageUrl = user.profileImageUrl
+                            isLiked = uid in it.likedBy
+                        }
+                    }
+            Resource.Success(posts)
         } catch (e: Exception) {
-            d("AddPostError", "$e")
+            Resource.Error(e.toString())
         }
     }
+
+    override suspend fun getNearbyPosts(location: Location): Resource<List<Post>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getUser(uid: String): Resource<UserModel> = withContext(Dispatchers.IO) {
+        return@withContext try {
+            val currentUser = users.document(uid).get().await()
+            val currentUserModel = UserModel(
+                currentUser["uid"] as String,
+                currentUser["userName"] as String,
+                currentUser["description"] as String,
+                currentUser["lat"] as Double,
+                currentUser["long"] as Double,
+                currentUser["profileImageUrl"] as String,
+            )
+            Resource.Success(currentUserModel)
+        } catch (e: Exception) {
+            Resource.Error(e.toString())
+        }
+    }
+
 
 }

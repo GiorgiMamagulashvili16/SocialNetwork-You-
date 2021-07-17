@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.you.R
 import com.example.you.adapters.DrawerAdapter
 import com.example.you.databinding.DashboardFragmentBinding
+import com.example.you.extensions.getCircleImage
 import com.example.you.models.drawer.DrawerItem
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.addpost.AddPostFragment
@@ -21,6 +21,8 @@ import com.example.you.ui.fragments.radius.RadiusFragment
 import com.example.you.ui.fragments.search.SearchFragment
 import com.example.you.util.Constants.DEFAULT_DRAWER_ITEM
 import com.example.you.util.Constants.UNDERLINED_DRAWER_ITEM
+import com.example.you.util.Resource
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
 typealias drawable = R.drawable
@@ -29,8 +31,8 @@ typealias string = R.string
 @AndroidEntryPoint
 class DashboardFragment :
     BaseFragment<DashboardFragmentBinding>(DashboardFragmentBinding::inflate) {
-
-    private lateinit var navController: NavController
+    private val auth = FirebaseAuth.getInstance()
+    private val viewModel: DashboardViewModel by viewModels()
     private val drawerAdapter: DrawerAdapter by lazy { DrawerAdapter() }
     override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
         init()
@@ -40,13 +42,34 @@ class DashboardFragment :
         initToolbar()
         initDrawer()
         setListeners()
+        observeCurrentUser()
+        viewModel.getUser(auth.uid!!)
     }
 
     private fun initToolbar() {
+
         (requireActivity() as AppCompatActivity).apply {
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+            supportActionBar?.setDisplayShowCustomEnabled(true)
             setSupportActionBar(binding.toolbar)
             supportActionBar?.title = null
         }
+        (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+    }
+
+    private fun observeCurrentUser() {
+        viewModel.curUser.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    binding.apply {
+                        ivToolbarProfile.getCircleImage(it.data!!.profileImageUrl)
+                        tvToolbarUserName.text = it.data.userName
+                    }
+                }
+                is Resource.Error -> d("CURRENTUSERERROR", "${it.errorMessage}")
+                else -> Unit
+            }
+        })
     }
 
     private fun setListeners() {

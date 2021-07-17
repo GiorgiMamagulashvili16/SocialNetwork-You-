@@ -19,7 +19,9 @@ class RegistrationViewModel @Inject constructor(
     private val repository: AuthRepositoryImpl
 ) : ViewModel() {
 
-    private val _signUpResponse = MutableLiveData<Resource<AuthResult>>()
+    private val _signUpResponse by lazy {
+        MutableLiveData<Resource<AuthResult>>()
+    }
     val signUpResponse: LiveData<Resource<AuthResult>> = _signUpResponse
 
     fun signUp(
@@ -31,6 +33,7 @@ class RegistrationViewModel @Inject constructor(
         imageUri: Uri
     ) =
         viewModelScope.launch {
+            _signUpResponse.postValue(Resource.Loading())
             withContext(Dispatchers.IO) {
                 _signUpResponse.postValue(
                     repository.register(

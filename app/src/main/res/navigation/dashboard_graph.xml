@@ -2,14 +2,18 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/dashboard_nav_graph"
+    android:id="@+id/dashboard_graph"
     app:startDestination="@id/postFragment">
-
     <fragment
         android:id="@+id/postFragment"
         android:name="com.example.you.ui.fragments.posts.PostFragment"
         android:label="post_fragment"
         tools:layout="@layout/post_fragment" />
+    <fragment
+        android:id="@+id/radiusFragment"
+        android:name="com.example.you.ui.fragments.radius.RadiusFragment"
+        android:label="radius_fragment"
+        tools:layout="@layout/radius_fragment" />
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.you.ui.fragments.search.SearchFragment"
@@ -21,8 +25,8 @@
         android:label="profile_fragment"
         tools:layout="@layout/profile_fragment" />
     <fragment
-        android:id="@+id/radiusFragment"
-        android:name="com.example.you.ui.fragments.radius.RadiusFragment"
-        android:label="radius_fragment"
-        tools:layout="@layout/radius_fragment" />
+        android:id="@+id/addPostFragment2"
+        android:name="com.example.you.ui.fragments.addpost.AddPostFragment"
+        android:label="add_post_fragment"
+        tools:layout="@layout/add_post_fragment" />
 </navigation>

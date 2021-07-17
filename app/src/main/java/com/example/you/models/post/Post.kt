@@ -9,10 +9,10 @@ data class Post(
     val authorId: String = "",
     val text: String = "",
     val postImageUrl: String = "",
-    @Exclude val authorProfileImageUrl: String = "",
-    @Exclude val authorUserName: String = "",
-    @Exclude val isLiked: Boolean = false,
+    @get:Exclude var authorProfileImageUrl: String = "",
+    @get:Exclude var authorUserName: String = "",
+    @get:Exclude var isLiked: Boolean = false,
     val likedBy: List<String> = listOf(),
-    val data: Long = 0L,
+    val date: Long = 0L,
 
     )

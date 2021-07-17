@@ -7,20 +7,14 @@
     android:background="@color/bg_main"
     android:padding="16dp">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivProfile"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        app:cardCornerRadius="8dp"
+        android:src="@mipmap/ic_launcher_round"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivProfile"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@mipmap/ic_launcher" />
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/postProfileImageStyle" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvUserName"
@@ -32,10 +26,10 @@
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView"
+        app:layout_constraintBottom_toBottomOf="@+id/ivProfile"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cardView"
-        app:layout_constraintTop_toTopOf="@+id/cardView" />
+        app:layout_constraintStart_toEndOf="@+id/ivProfile"
+        app:layout_constraintTop_toTopOf="@+id/ivProfile" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvPostText"
@@ -49,23 +43,16 @@
         app:layout_constraintTop_toBottomOf="@id/tvUserName"
         tools:layout_editor_absoluteX="8dp" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView2"
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivPostImage"
         android:layout_width="match_parent"
-        android:layout_height="280dp"
-        android:layout_marginTop="10dp"
-        app:cardCornerRadius="8dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="25dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_add_imaeg"
+        app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintTop_toBottomOf="@id/tvPostText"
-        tools:layout_editor_absoluteX="16dp">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivPost"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher" />
-
-    </androidx.cardview.widget.CardView>
+        app:shapeAppearanceOverlay="@style/postImageCornerStyle" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/btnLike"
@@ -75,17 +62,17 @@
         android:background="@android:color/transparent"
         android:src="@drawable/ic_heart"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+        app:layout_constraintTop_toBottomOf="@+id/ivPostImage" />
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:layout_width="36dp"
         android:id="@+id/btnComment"
+        android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_margin="10dp"
         android:background="@android:color/transparent"
         android:src="@drawable/ic_comments"
         app:layout_constraintStart_toEndOf="@+id/btnLike"
-        app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+        app:layout_constraintTop_toBottomOf="@+id/ivPostImage" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
@@ -95,7 +82,7 @@
         android:textColor="@color/gray"
         android:textSize="15sp"
         app:layout_constraintEnd_toStartOf="@+id/appCompatTextView"
-        app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+        app:layout_constraintTop_toBottomOf="@+id/ivPostImage" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/appCompatTextView"
@@ -108,23 +95,24 @@
         android:textColor="@color/white"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+        app:layout_constraintTop_toBottomOf="@+id/ivPostImage" />
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btnViewComments"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginTop="50dp"
-        android:textSize="17sp"
-        android:id="@+id/btnViewComments"
         android:background="@drawable/bg_button"
         android:text="@string/view_comments"
         android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@+id/cardView2" />
+        android:textSize="17sp"
+        app:layout_constraintTop_toBottomOf="@+id/ivPostImage" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="3dp"
+        android:layout_marginTop="25dp"
         android:background="#313131"
-        app:layout_constraintTop_toBottomOf="@id/btnViewComments"
-        android:layout_marginTop="25dp"/>
+        app:layout_constraintTop_toBottomOf="@id/btnViewComments" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

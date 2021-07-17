@@ -3,21 +3,24 @@ package com.example.you.repositories.auth
 
 import android.net.Uri
 import com.example.you.models.user.UserModel
+import com.example.you.util.Constants
+import com.example.you.util.Constants.USER_COLLECTION_NAME
 import com.example.you.util.Resource
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class AuthRepositoryImpl @Inject constructor(): AuthRepository {
-    private val auth = FirebaseAuth.getInstance()
-    private val users = FirebaseFirestore.getInstance().collection("users")
-    private val storage = Firebase.storage
+class AuthRepositoryImpl @Inject constructor(
+    private val auth: FirebaseAuth,
+    private val storage: FirebaseStorage,
+    private val fireStore: FirebaseFirestore
+) : AuthRepository {
+    private val users = fireStore.collection(USER_COLLECTION_NAME)
     override suspend fun register(
         email: String,
         password: String,
