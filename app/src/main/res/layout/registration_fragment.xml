@@ -154,21 +154,12 @@
             android:layout_gravity="center"
             android:src="@drawable/ic_have_an_account__sign_in" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:theme="@style/Progress"
-            android:visibility="invisible" />
-
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btnSignUp"
             android:layout_width="279dp"
             android:layout_height="60dp"
             android:layout_gravity="center"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="55dp"
             android:layout_marginBottom="46dp"
             android:background="@drawable/bg_button"
             android:text="@string/sign_up"

@@ -15,6 +15,8 @@ import com.example.you.extensions.show
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Resource
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,6 +36,13 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
         }
         observe()
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+    }
+    override fun onStart() {
+        super.onStart()
+        val user = Firebase.auth.currentUser
+        if (user != null) {
+            findNavController().navigate(R.id.action_logInFragment_to_dashboardFragment)
+        }
     }
 
     private fun logIn() {

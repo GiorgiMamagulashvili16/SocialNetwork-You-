@@ -21,7 +21,7 @@
         tools:layout="@layout/search_fragment" />
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.example.you.ui.fragments.profile.ProfileFragment"
+        android:name="com.example.you.ui.fragments.my_profile.ProfileFragment"
         android:label="profile_fragment"
         tools:layout="@layout/profile_fragment" />
     <fragment

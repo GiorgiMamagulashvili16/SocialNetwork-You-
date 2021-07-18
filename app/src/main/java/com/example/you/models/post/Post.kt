@@ -12,7 +12,6 @@ data class Post(
     @get:Exclude var authorProfileImageUrl: String = "",
     @get:Exclude var authorUserName: String = "",
     @get:Exclude var isLiked: Boolean = false,
-    val likedBy: List<String> = listOf(),
+    var likedBy: List<String> = listOf(),
     val date: Long = 0L,
-
-    )
+)

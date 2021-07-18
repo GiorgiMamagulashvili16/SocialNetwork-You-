@@ -11,5 +11,6 @@ interface PostRepository {
     suspend fun addPost(imageUri: Uri, postText: String): Resource<Any>
     suspend fun getAllPost(): Resource<List<Post>>
     suspend fun getNearbyPosts(location: Location): Resource<List<Post>>
-    suspend fun getUser(uid:String):Resource<UserModel>
+    suspend fun getUser(uid: String): Resource<UserModel>
+
 }

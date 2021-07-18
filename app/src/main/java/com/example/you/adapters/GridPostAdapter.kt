@@ -5,22 +5,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.you.databinding.RowPostItemBinding
+import com.example.you.databinding.RowGridImageItemBinding
 import com.example.you.extensions.getShapeableImage
 import com.example.you.models.post.Post
 
-class PostAdapter : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
+class GridPostAdapter : RecyclerView.Adapter<GridPostAdapter.PostViewHolder>() {
 
-    inner class PostViewHolder(val binding: RowPostItemBinding) :
+    inner class PostViewHolder(val binding: RowGridImageItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         lateinit var post: Post
         fun onBind() {
             post = differ.currentList[absoluteAdapterPosition]
             binding.apply {
-                tvUserName.text = post.authorUserName
-                tvPostText.text = post.text
-                ivPostImage.getShapeableImage(post.postImageUrl)
-                ivProfile.getShapeableImage(post.authorProfileImageUrl)
+                tvGridImage.getShapeableImage(post.postImageUrl)
             }
         }
     }
@@ -37,7 +34,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
     val differ = AsyncListDiffer(this, util)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder =
         PostViewHolder(
-            RowPostItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            RowGridImageItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) = holder.onBind()

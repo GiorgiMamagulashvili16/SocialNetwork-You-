@@ -4,7 +4,7 @@
     <string name="news_feed">News Feed</string>
     <string name="nearby_posts">Nearby Posts</string>
     <string name="search">Search</string>
-    <string name="profile">Profile</string>
+    <string name="profile">My Profile</string>
     <string name="add_post">Add Post</string>
     <string name="log_out">Log Out</string>
     <string name="write_your_post">Write your post</string>
@@ -29,5 +29,6 @@
     <string name="please_choose_post_image">Please Choose Post Image</string>
     <string name="loading">Loading…</string>
     <string name="please_choose_image">Please choose image</string>
+    <string name="post_list_size">%1$d\ %2$s</string>
 
 </resources>

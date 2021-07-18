@@ -7,19 +7,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.you.R
 import com.example.you.adapters.DrawerAdapter
 import com.example.you.databinding.DashboardFragmentBinding
-import com.example.you.extensions.getCircleImage
+import com.example.you.extensions.getShapeableImage
 import com.example.you.models.drawer.DrawerItem
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.addpost.AddPostFragment
+import com.example.you.ui.fragments.my_profile.ProfileFragment
 import com.example.you.ui.fragments.posts.PostFragment
-import com.example.you.ui.fragments.profile.ProfileFragment
 import com.example.you.ui.fragments.radius.RadiusFragment
 import com.example.you.ui.fragments.search.SearchFragment
 import com.example.you.util.Constants.DEFAULT_DRAWER_ITEM
+import com.example.you.util.Constants.DRAWER_LOG_OUT_INDEX
 import com.example.you.util.Constants.UNDERLINED_DRAWER_ITEM
 import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
@@ -62,7 +64,7 @@ class DashboardFragment :
             when (it) {
                 is Resource.Success -> {
                     binding.apply {
-                        ivToolbarProfile.getCircleImage(it.data!!.profileImageUrl)
+                        ivToolbarProfile.getShapeableImage(it.data!!.profileImageUrl)
                         tvToolbarUserName.text = it.data.userName
                     }
                 }
@@ -78,7 +80,7 @@ class DashboardFragment :
                 binding.root.openDrawer(GravityCompat.START)
             }
             ivToolbarProfile.setOnClickListener {
-                setCurrentFragment(ProfileFragment())
+                findNavController().navigate(R.id.action_dashboardFragment_to_profileFragment2)
             }
         }
     }
@@ -129,9 +131,18 @@ class DashboardFragment :
             )
         )
         drawerAdapter.onMenuClick = {
-            d("TAGTAG", "$it")
-            if (it != null) {
-                setCurrentFragment(it)
+            it?.let {
+                if (it.icon == drawable.ic_profile)
+                    findNavController().navigate(R.id.action_dashboardFragment_to_profileFragment2)
+                else
+                    it.fragmentId?.let { fragment -> setCurrentFragment(fragment) }
+            }
+        }
+        drawerAdapter.onLogOutClick = {
+
+            if (it == DRAWER_LOG_OUT_INDEX) {
+                FirebaseAuth.getInstance().signOut()
+                findNavController().navigate(R.id.action_global_logInFragment)
             }
         }
     }

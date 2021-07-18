@@ -13,6 +13,7 @@ import com.canhub.cropper.options
 import com.example.you.R
 import com.example.you.databinding.AddPostFragmentBinding
 import com.example.you.extensions.createInfoSnackBar
+import com.example.you.extensions.slideUp
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Resource
@@ -31,6 +32,7 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
         setListener()
         observePostResponse()
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+        slideUp(requireContext(),binding.btnAddPost,binding.ivPostImage,binding.tvAddPicture,binding.tvPostText)
     }
 
     private fun setListener() {

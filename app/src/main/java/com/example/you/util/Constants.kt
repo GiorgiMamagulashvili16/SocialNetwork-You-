@@ -9,4 +9,6 @@ object Constants {
 
     const val USER_COLLECTION_NAME = "users"
     const val POSTS_COLLECTION_NAME ="posts"
+
+    const val DRAWER_LOG_OUT_INDEX = 5
 }

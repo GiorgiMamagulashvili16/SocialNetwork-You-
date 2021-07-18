@@ -2,7 +2,6 @@ package com.example.you.repositories.posts
 
 import android.location.Location
 import android.net.Uri
-import android.util.Log.d
 import com.example.you.models.post.Post
 import com.example.you.models.user.UserModel
 import com.example.you.util.Constants.POSTS_COLLECTION_NAME
@@ -10,7 +9,6 @@ import com.example.you.util.Constants.USER_COLLECTION_NAME
 import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -50,8 +48,7 @@ class PostRepositoryImp @Inject constructor(
     override suspend fun getAllPost(): Resource<List<Post>> = withContext(Dispatchers.IO) {
         return@withContext try {
             val uid = auth.uid!!
-            d("POSTPOST","$uid")
-            val posts =
+            val allPosts =
                 posts.whereNotEqualTo("authorId", uid)
                     .get()
                     .await().toObjects(Post::class.java).onEach {
@@ -62,15 +59,42 @@ class PostRepositoryImp @Inject constructor(
                             isLiked = uid in it.likedBy
                         }
                     }
-            Resource.Success(posts)
+            Resource.Success(allPosts)
         } catch (e: Exception) {
             Resource.Error(e.toString())
         }
     }
 
-    override suspend fun getNearbyPosts(location: Location): Resource<List<Post>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getNearbyPosts(location: Location): Resource<List<Post>> =
+        withContext(Dispatchers.IO) {
+            return@withContext try {
+                val uid = auth.uid!!
+                val nearbyPost = mutableListOf<Post>()
+
+                posts.whereNotEqualTo("authorId", uid).get().await().toObjects(Post::class.java)
+                    .forEach {
+                        val user = getUser(it.authorId).data!!
+                        it.apply {
+                            authorUserName = user.userName
+                            authorProfileImageUrl = user.profileImageUrl
+                            isLiked = uid in it.likedBy
+                        }
+                        val currentUserLocation = Location("CurrentUserLocation").apply {
+                            latitude = location.latitude
+                            longitude = location.longitude
+                        }
+                        val userLocation = Location("userLocation").apply {
+                            latitude = user.lat as Double
+                            longitude = user.long as Double
+                        }
+                        if (currentUserLocation.distanceTo(userLocation) < 5000.0)
+                            nearbyPost.add(it)
+                    }
+                Resource.Success(nearbyPost)
+            } catch (e: Exception) {
+                Resource.Error(e.toString())
+            }
+        }
 
     override suspend fun getUser(uid: String): Resource<UserModel> = withContext(Dispatchers.IO) {
         return@withContext try {
@@ -88,6 +112,7 @@ class PostRepositoryImp @Inject constructor(
             Resource.Error(e.toString())
         }
     }
+
 
 
 }

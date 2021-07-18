@@ -10,7 +10,11 @@
     </style>
     <style name="postProfileImageStyle">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">19%</item>
+        <item name="cornerSize">25%</item>
+    </style>
+    <style name="gridImageStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10%</item>
     </style>
     <style name="Progress" parent="Widget.AppCompat.ProgressBar">
         <item name="colorAccent">@color/icon_color</item> <!-- Whatever color you want-->

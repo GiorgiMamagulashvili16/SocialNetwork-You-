@@ -10,24 +10,26 @@ import com.example.you.models.drawer.DrawerItem
 import com.example.you.util.Constants.DEFAULT_DRAWER_ITEM
 import com.example.you.util.Constants.UNDERLINED_DRAWER_ITEM
 
-typealias onMenuClick = (id: Fragment?) -> Unit
+typealias onMenuClick = (drawerItem:DrawerItem?) -> Unit
+typealias onLogOutClick = (position: Int) -> Unit
 
 class DrawerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     private val itemList = mutableListOf<DrawerItem>()
     lateinit var onMenuClick: onMenuClick
-
+    lateinit var onLogOutClick: onLogOutClick
 
     inner class DrawerViewHolder(val binding: RowDrawerItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         private lateinit var model: DrawerItem
         fun onBind() {
-            model = itemList[adapterPosition]
+            model = itemList[absoluteAdapterPosition]
             binding.tvItemName.text = model.itemTitle
             binding.ivIcon.setImageResource(model.icon)
             binding.root.setOnClickListener {
-                onMenuClick.invoke(model.fragmentId)
+                onMenuClick.invoke(model)
+                onLogOutClick.invoke(absoluteAdapterPosition)
             }
         }
 
@@ -37,11 +39,11 @@ class DrawerAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         RecyclerView.ViewHolder(binding.root) {
         private lateinit var model: DrawerItem
         fun onBind() {
-            model = itemList[adapterPosition]
+            model = itemList[absoluteAdapterPosition]
             binding.tvItemName.text = model.itemTitle
             binding.ivIcon.setImageResource(model.icon)
             binding.root.setOnClickListener {
-                onMenuClick.invoke(model.fragmentId)
+                onMenuClick.invoke(model)
             }
         }
     }

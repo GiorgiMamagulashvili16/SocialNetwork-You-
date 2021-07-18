@@ -65,14 +65,14 @@ class RegistrationFragment :
         viewModel.signUpResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    binding.progressBar.hide()
+                    dismissLoadingDialog()
                     findNavController().navigate(R.id.action_registrationFragment_to_logInFragment)
                 }
                 is Resource.Error -> {
-                    binding.progressBar.hide()
+                    dismissLoadingDialog()
                 }
                 is Resource.Loading -> {
-                    binding.progressBar.show()
+                    createLoadingDialog()
                 }
             }
         })
