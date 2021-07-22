@@ -32,7 +32,11 @@
         android:id="@+id/searchFragment"
         android:name="com.example.you.ui.fragments.search.SearchFragment"
         android:label="search_fragment"
-        tools:layout="@layout/search_fragment" />
+        tools:layout="@layout/search_fragment" >
+        <action
+            android:id="@+id/action_searchFragment_to_otherUserProfileFragment"
+            app:destination="@id/otherUserProfileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addPostFragment2"
         android:name="com.example.you.ui.fragments.addpost.AddPostFragment"
@@ -53,6 +57,9 @@
         <action
             android:id="@+id/action_otherUserProfileFragment_to_bottomSheetComments"
             app:destination="@id/bottomSheetComments" />
+        <argument
+            android:name="uid"
+            app:argType="string" />
     </fragment>
     <dialog
         android:id="@+id/bottomSheetComments"

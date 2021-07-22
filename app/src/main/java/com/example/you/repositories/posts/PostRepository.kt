@@ -17,4 +17,5 @@ interface PostRepository {
     suspend fun getCommentForPost(postId: String): Resource<List<Comment>>
     suspend fun deleteComment(commentId: String): Resource<Any>
     suspend fun getPostLikes(post: Post): Resource<Boolean>
+    suspend fun searchUser(query: String): Resource<List<UserModel>>
 }

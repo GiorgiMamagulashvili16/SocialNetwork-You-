@@ -173,7 +173,7 @@ class PostRepositoryImp @Inject constructor(
                 transaction.update(
                     posts.document(post.postId),
                     "likedBy",
-                    if(uid in currentLikes) currentLikes - uid else {
+                    if (uid in currentLikes) currentLikes - uid else {
                         isLiked = true
                         currentLikes + uid
                     }
@@ -187,6 +187,31 @@ class PostRepositoryImp @Inject constructor(
             Log.d("HEUJEUEE", "${e}")
             Resource.Error(e.toString())
         }
+
+
     }
+
+    override suspend fun searchUser(query: String): Resource<List<UserModel>> =
+        withContext(Dispatchers.IO) {
+            return@withContext try {
+                val userList = mutableListOf<UserModel>()
+                val users = users.whereGreaterThanOrEqualTo(
+                    "userName", query.toUpperCase(
+                        Locale.ROOT
+                    )
+                ).get().await()
+                for (i in users.documents) {
+                    val user = UserModel(
+                        i["uid"] as String,
+                        i["userName"] as String,
+                        i["profileImageUrl"] as String,
+                    )
+                    userList.add(user)
+                }
+                Resource.Success(userList)
+            } catch (e: Exception) {
+                Resource.Error(e.toString())
+            }
+        }
 
 }

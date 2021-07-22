@@ -7,18 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
-import androidx.core.os.bundleOf
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.you.R
 import com.example.you.adapters.posts.PostAdapter
 import com.example.you.databinding.RadiusFragmentBinding
 import com.example.you.ui.base.BaseFragment
-import com.example.you.ui.fragments.dashboard.DashboardFragmentDirections
-import com.example.you.util.Constants
 import com.example.you.util.Resource
 import com.google.android.gms.location.*
 import com.google.firebase.auth.FirebaseAuth
@@ -153,11 +148,11 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
             Navigation.findNavController(requireView()).navigate(action)
         }
         postAdapter.onProfileClick = {
-            setFragmentResult(
-                Constants.REQUEST_KEY_USER_ID,
-                bundleOf(Constants.BUNDLE_KEY_USER_ID to it)
+            findNavController().navigate(
+                RadiusFragmentDirections.actionRadiusFragmentToOtherUserProfileFragment(
+                    it
+                )
             )
-            findNavController().navigate(R.id.action_radiusFragment_to_otherUserProfileFragment)
         }
         postAdapter.onCommentClick = {
             showAddCommentDialog(it)

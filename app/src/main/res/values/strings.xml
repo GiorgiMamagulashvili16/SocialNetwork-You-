@@ -48,4 +48,5 @@
     <string name="no_comments_yet">No Comments Yet</string>
     <string name="likedby">LikedBy</string>
     <string name="no_like_yet">No Likes Yet</string>
+    <string name="empty">Empty</string>
 </resources>

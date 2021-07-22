@@ -100,8 +100,7 @@ class PostFragment : BaseFragment<PostFragmentBinding>(PostFragmentBinding::infl
             adapter = postAdapter
         }
         postAdapter.onProfileClick = {
-            setFragmentResult(REQUEST_KEY_USER_ID, bundleOf(BUNDLE_KEY_USER_ID to it))
-            findNavController().navigate(R.id.action_postFragment_to_otherUserProfileFragment)
+            findNavController().navigate(PostFragmentDirections.actionPostFragmentToOtherUserProfileFragment(it))
         }
         postAdapter.onCommentClick = {
             showAddCommentDialog(it)

@@ -6,6 +6,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.you.R
 import com.example.you.adapters.posts.OtherUserPostAdapter
@@ -27,17 +28,15 @@ class OtherUserProfileFragment :
     private val viewModel: OtherUserProfileViewModel by viewModels()
     private val postAdapter: OtherUserPostAdapter by lazy { OtherUserPostAdapter() }
     private var currentPostIndex: Int? = null
+    val args:OtherUserProfileFragmentArgs by navArgs()
 
     override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
         init()
     }
 
     private fun init() {
-        setFragmentResultListener(REQUEST_KEY_USER_ID) { _, bundle ->
-            val result = bundle.getString(BUNDLE_KEY_USER_ID)
-            result?.let { viewModel.getUser(it) }
-            result?.let { viewModel.getUserPosts(it) }
-        }
+        viewModel.getUserPosts(args.uid)
+        viewModel.getUser(args.uid)
         slideUp(
             requireContext(),
             binding.btnBack,

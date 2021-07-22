@@ -1,19 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/bg_main"
+    android:paddingLeft="15dp"
+    android:paddingEnd="15dp"
+    android:paddingRight="15dp"
     tools:context=".ui.fragments.search.SearchFragment">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilSearch"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search"
-        android:textColor="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:gravity="center"
-        android:textSize="35sp"/>
+        android:layout_marginTop="53dp"
+        android:layout_marginBottom="24dp"
+        android:hint="@string/search"
+        android:textColorHint="@color/gray_for_hint"
+        app:boxStrokeColor="@color/icon_color"
+        app:boxStrokeWidthFocused="2dp"
+        app:hintTextColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etSearch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/white" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSearchUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"
+        android:layoutAnimation="@anim/rec_animation"
+        app:layout_constraintTop_toBottomOf="@id/tilSearch" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        android:text="@string/empty"
+        android:visibility="visible"
+        android:textColor="@color/white"
+        android:textSize="35sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
