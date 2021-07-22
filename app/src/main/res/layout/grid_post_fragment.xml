@@ -3,12 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="1dp"
+    android:paddingLeft="15dp"
+    android:paddingEnd="15dp"
+    android:paddingRight="15dp"
     tools:context=".ui.fragments.my_profile.posts.GridPostFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvGridPosts"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/rvGridPosts"/>
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

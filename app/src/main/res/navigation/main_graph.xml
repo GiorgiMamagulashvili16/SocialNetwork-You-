@@ -9,7 +9,7 @@
         android:id="@+id/splashFragment"
         android:name="com.example.you.ui.fragments.splash.SplashFragment"
         android:label="splash_fragment"
-        tools:layout="@layout/splash_fragment" >
+        tools:layout="@layout/splash_fragment">
         <action
             android:id="@+id/action_splashFragment_to_logInFragment"
             app:destination="@id/logInFragment"
@@ -25,7 +25,7 @@
         android:id="@+id/registrationFragment"
         android:name="com.example.you.ui.fragments.auth.signup.RegistrationFragment"
         android:label="registration_fragment"
-        tools:layout="@layout/registration_fragment" >
+        tools:layout="@layout/registration_fragment">
         <action
             android:id="@+id/action_registrationFragment_to_logInFragment"
             app:destination="@id/logInFragment"
@@ -36,7 +36,7 @@
         android:id="@+id/logInFragment"
         android:name="com.example.you.ui.fragments.auth.logIn.LogInFragment"
         android:label="log_in_fragment"
-        tools:layout="@layout/log_in_fragment" >
+        tools:layout="@layout/log_in_fragment">
         <action
             android:id="@+id/action_logInFragment_to_registrationFragment"
             app:destination="@id/registrationFragment" />
@@ -44,29 +44,20 @@
             android:id="@+id/action_logInFragment_to_dashboardFragment"
             app:destination="@id/dashboardFragment"
             app:popUpTo="@id/logInFragment"
-            app:popUpToInclusive="true"/>
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/dashboardFragment"
         android:name="com.example.you.ui.fragments.dashboard.DashboardFragment"
         android:label="dashboard_fragment"
-        tools:layout="@layout/dashboard_fragment" >
-        <action
-            android:id="@+id/action_dashboardFragment_to_profileFragment2"
-            app:destination="@id/profileFragment2" />
-    </fragment>
-    <action android:id="@+id/action_global_dashboardFragment" app:destination="@id/dashboardFragment"/>
-    <action android:id="@+id/action_global_logInFragment" app:destination="@id/logInFragment"
+        tools:layout="@layout/dashboard_fragment"/>
+    <action
+        android:id="@+id/action_global_dashboardFragment"
+        app:destination="@id/dashboardFragment" />
+    <action
+        android:id="@+id/action_global_logInFragment"
+        app:destination="@id/logInFragment"
         app:popUpTo="@id/dashboardFragment"
-        app:popUpToInclusive="true"/>
-    <fragment
-        android:id="@+id/profileFragment2"
-        android:name="com.example.you.ui.fragments.my_profile.ProfileFragment"
-        android:label="profile_fragment"
-        tools:layout="@layout/profile_fragment" >
-        <action
-            android:id="@+id/action_profileFragment2_to_dashboardFragment"
-            app:destination="@id/dashboardFragment" />
-    </fragment>
+        app:popUpToInclusive="true" />
 
 </navigation>

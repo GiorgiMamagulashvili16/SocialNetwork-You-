@@ -30,5 +30,22 @@
     <string name="loading">Loading…</string>
     <string name="please_choose_image">Please choose image</string>
     <string name="post_list_size">%1$d\ %2$s</string>
-
+    <string name="post_liked_list_size">%1$d\ %2$s</string>
+    <string name="add_cover_image">+ Add Cover Image</string>
+    <string name="update_image">Update Image</string>
+    <string name="description">Description</string>
+    <string name="add_profile_description">Add Profile Description</string>
+    <string name="save">Save</string>
+    <string name="no_post_yet">No Post Yet</string>
+    <string name="add_new_image">Add New Image</string>
+    <string name="are_you_sure_you_want_to_delete_the_post">Are you sure you want to delete the post?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="successfully_deleted">Successfully Deleted</string>
+    <string name="four_dot">....</string>
+    <string name="write_comment_here">Write Comment here</string>
+    <string name="add_comment">add Comment</string>
+    <string name="no_comments_yet">No Comments Yet</string>
+    <string name="likedby">LikedBy</string>
+    <string name="no_like_yet">No Likes Yet</string>
 </resources>

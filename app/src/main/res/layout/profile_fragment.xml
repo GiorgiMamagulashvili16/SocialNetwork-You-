@@ -15,6 +15,14 @@
         android:layout_height="wrap_content"
         android:padding="3dp">
 
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivCoverImage"
+            android:layout_width="match_parent"
+            android:layout_height="185dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintDimensionRatio="21:9"
+            app:layout_constraintTop_toTopOf="parent" />
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
@@ -33,15 +41,6 @@
             android:background="@android:color/transparent"
             android:src="@drawable/ic_edit_profile"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/ivCoverImage"
-            android:layout_width="match_parent"
-            android:layout_height="185dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/img_girl"
-            app:layout_constraintDimensionRatio="21:9"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.imageview.ShapeableImageView

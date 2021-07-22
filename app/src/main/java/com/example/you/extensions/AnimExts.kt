@@ -14,8 +14,9 @@ fun View.animSlideUp(context: Context, time: Long, startOffSetTime: Long) {
     }
     startAnimation(slideUp)
 }
-fun slideUp (context: Context,vararg views: View,time:Long = 300L,delay:Long = 150L){
-    views.forEach {
-        it.animSlideUp(context,time,delay)
+
+fun slideUp(context: Context, vararg views: View, time: Long = 300L, delay: Long = 150L) {
+    for (i in views.indices) {
+        views[i].animSlideUp(context, time, i * delay)
     }
 }

@@ -20,8 +20,7 @@ import com.canhub.cropper.options
 import com.example.you.R
 import com.example.you.databinding.RegistrationFragmentBinding
 import com.example.you.extensions.createInfoSnackBar
-import com.example.you.extensions.hide
-import com.example.you.extensions.show
+import com.example.you.extensions.slideUp
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Resource
@@ -39,7 +38,6 @@ class RegistrationFragment :
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-    private var userLocation: Location? = null
 
     private var profileImageUri: Uri? = null
 
@@ -52,13 +50,22 @@ class RegistrationFragment :
         setListeners()
         locationPermissionsRequest()
         observe()
-
     }
 
     private fun setListeners() {
         binding.btnAddImage.setOnClickListener {
             mediaPermissionRequest()
         }
+        slideUp(
+            requireContext(),
+            binding.etEmail,
+            binding.etPassword,
+            binding.etRepeatPassword,
+            binding.etUserName,
+            binding.PickedPicture,
+            binding.btnAddImage,
+            binding.btnSignUp
+        )
     }
 
     private fun observe() {
@@ -69,10 +76,11 @@ class RegistrationFragment :
                     findNavController().navigate(R.id.action_registrationFragment_to_logInFragment)
                 }
                 is Resource.Error -> {
+                    it.errorMessage?.let { message -> showErrorDialog(message) }
                     dismissLoadingDialog()
                 }
                 is Resource.Loading -> {
-                    createLoadingDialog()
+                    showLoadingDialog()
                 }
             }
         })
@@ -130,7 +138,7 @@ class RegistrationFragment :
         cropImageContract.launch(
             options {
                 setGuidelines(CropImageView.Guidelines.ON)
-                setAspectRatio(4, 3)
+                setAspectRatio(1, 1)
             }
         )
     }

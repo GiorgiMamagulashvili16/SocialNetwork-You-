@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.you.models.post.Post
 import com.example.you.models.user.UserModel
-import com.example.you.repositories.posts.PostRepositoryImp
 import com.example.you.repositories.userProfile.UserProfileRepoImpl
 import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
@@ -34,6 +33,17 @@ class ProfileViewModel @Inject constructor(
         MutableLiveData<Int>()
     }
     val postListSize: LiveData<Int> = _postListSize
+    private val _deletePostResponse by lazy {
+        MutableLiveData<Resource<Any>>()
+    }
+    val deletePostResponse: LiveData<Resource<Any>> = _deletePostResponse
+
+    fun deletePost(postId: String) = viewModelScope.launch {
+        _deletePostResponse.postValue(Resource.Loading())
+        withContext(Dispatchers.IO) {
+            _deletePostResponse.postValue(repository.deletePost(postId))
+        }
+    }
 
     fun getCurrentUser() = viewModelScope.launch {
         _user.postValue(Resource.Loading())

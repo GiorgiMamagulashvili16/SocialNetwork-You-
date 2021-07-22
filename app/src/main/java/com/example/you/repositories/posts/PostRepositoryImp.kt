@@ -2,13 +2,17 @@ package com.example.you.repositories.posts
 
 import android.location.Location
 import android.net.Uri
+import android.util.Log
+import com.example.you.models.post.Comment
 import com.example.you.models.post.Post
 import com.example.you.models.user.UserModel
+import com.example.you.util.Constants.COMMENTS_COLLECTION_NAME
 import com.example.you.util.Constants.POSTS_COLLECTION_NAME
 import com.example.you.util.Constants.USER_COLLECTION_NAME
 import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -23,6 +27,7 @@ class PostRepositoryImp @Inject constructor(
 ) : PostRepository {
     private val users = fireStore.collection(USER_COLLECTION_NAME)
     private val posts = fireStore.collection(POSTS_COLLECTION_NAME)
+    private val comments = fireStore.collection(COMMENTS_COLLECTION_NAME)
 
     override suspend fun addPost(imageUri: Uri, postText: String): Resource<Any> =
         withContext(Dispatchers.IO) {
@@ -50,6 +55,7 @@ class PostRepositoryImp @Inject constructor(
             val uid = auth.uid!!
             val allPosts =
                 posts.whereNotEqualTo("authorId", uid)
+                    .orderBy("authorId", Query.Direction.DESCENDING)
                     .get()
                     .await().toObjects(Post::class.java).onEach {
                         val user = getUser(it.authorId).data!!
@@ -113,6 +119,74 @@ class PostRepositoryImp @Inject constructor(
         }
     }
 
+    override suspend fun addComment(postId: String, text: String): Resource<Any> =
+        withContext(Dispatchers.IO) {
+            return@withContext try {
+                val commentId = UUID.randomUUID().toString()
+                val authorId = auth.currentUser?.uid!!
+                val user = getUser(authorId).data!!
+                val comment =
+                    Comment(
+                        commentId = commentId,
+                        authorId = authorId,
+                        postId = postId,
+                        authorUsername = user.userName,
+                        authorProfileImage = user.profileImageUrl,
+                        date = System.currentTimeMillis(),
+                        commentText = text
+                    )
+                comments.document(commentId).set(comment).await()
+                Resource.Success(Any())
+            } catch (e: Exception) {
+                Resource.Error(e.toString())
+            }
+        }
 
+    override suspend fun getCommentForPost(postId: String): Resource<List<Comment>> =
+        withContext(Dispatchers.IO) {
+            return@withContext try {
+                val allComments = comments.whereEqualTo("postId", postId).get().await()
+                    .toObjects(Comment::class.java)
+                Resource.Success(allComments)
+            } catch (e: Exception) {
+                Resource.Error(e.toString())
+            }
+        }
+
+    override suspend fun deleteComment(commentId: String): Resource<Any> =
+        withContext(Dispatchers.IO) {
+            return@withContext try {
+                comments.document(commentId).delete().await()
+                Resource.Success(Any())
+            } catch (e: Exception) {
+                Resource.Error(e.toString())
+            }
+        }
+
+    override suspend fun getPostLikes(post: Post): Resource<Boolean> = withContext(Dispatchers.IO) {
+        return@withContext try {
+            var isLiked = false
+            fireStore.runTransaction { transaction ->
+                val uid = auth.uid!!
+                val postResult = transaction.get(posts.document(post.postId))
+                val currentLikes = postResult.toObject(Post::class.java)?.likedBy ?: listOf()
+                transaction.update(
+                    posts.document(post.postId),
+                    "likedBy",
+                    if(uid in currentLikes) currentLikes - uid else {
+                        isLiked = true
+                        currentLikes + uid
+                    }
+                )
+            }.await()
+            Resource.Success(isLiked)
+
+            Log.d("HEUJEU", "${isLiked}")
+            Resource.Success(isLiked)
+        } catch (e: Exception) {
+            Log.d("HEUJEUEE", "${e}")
+            Resource.Error(e.toString())
+        }
+    }
 
 }

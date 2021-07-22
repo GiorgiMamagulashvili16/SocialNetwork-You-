@@ -1,4 +1,4 @@
-package com.example.you.adapters
+package com.example.you.adapters.posts
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

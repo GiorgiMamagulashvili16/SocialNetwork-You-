@@ -7,19 +7,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.you.DashboardGraphDirections
+import com.example.you.MainGraphDirections
 import com.example.you.R
 import com.example.you.adapters.DrawerAdapter
 import com.example.you.databinding.DashboardFragmentBinding
 import com.example.you.extensions.getShapeableImage
 import com.example.you.models.drawer.DrawerItem
 import com.example.you.ui.base.BaseFragment
-import com.example.you.ui.fragments.addpost.AddPostFragment
-import com.example.you.ui.fragments.my_profile.ProfileFragment
-import com.example.you.ui.fragments.posts.PostFragment
-import com.example.you.ui.fragments.radius.RadiusFragment
-import com.example.you.ui.fragments.search.SearchFragment
 import com.example.you.util.Constants.DEFAULT_DRAWER_ITEM
 import com.example.you.util.Constants.DRAWER_LOG_OUT_INDEX
 import com.example.you.util.Constants.UNDERLINED_DRAWER_ITEM
@@ -36,6 +35,9 @@ class DashboardFragment :
     private val auth = FirebaseAuth.getInstance()
     private val viewModel: DashboardViewModel by viewModels()
     private val drawerAdapter: DrawerAdapter by lazy { DrawerAdapter() }
+
+    private lateinit var navController: NavController
+
     override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
         init()
     }
@@ -46,6 +48,9 @@ class DashboardFragment :
         setListeners()
         observeCurrentUser()
         viewModel.getUser(auth.uid!!)
+        val host =
+            childFragmentManager.findFragmentById(R.id.dashNavHostFragment) as NavHostFragment
+        navController = host.findNavController()
     }
 
     private fun initToolbar() {
@@ -80,7 +85,8 @@ class DashboardFragment :
                 binding.root.openDrawer(GravityCompat.START)
             }
             ivToolbarProfile.setOnClickListener {
-                findNavController().navigate(R.id.action_dashboardFragment_to_profileFragment2)
+                val action = DashboardGraphDirections.actionGlobalProfileFragment()
+                navController.navigate(action)
             }
         }
     }
@@ -94,31 +100,31 @@ class DashboardFragment :
             mutableListOf(
                 DrawerItem(
                     DEFAULT_DRAWER_ITEM,
-                    PostFragment(),
+                    DashboardGraphDirections.actionGlobalPostFragment(),
                     drawable.ic_home,
                     getString(string.news_feed)
                 ),
                 DrawerItem(
                     DEFAULT_DRAWER_ITEM,
-                    RadiusFragment(),
+                    DashboardGraphDirections.actionGlobalRadiusFragment(),
                     drawable.ic_map,
                     getString(string.nearby_posts)
                 ),
                 DrawerItem(
                     DEFAULT_DRAWER_ITEM,
-                    SearchFragment(),
+                    DashboardGraphDirections.actionGlobalSearchFragment(),
                     drawable.ic_search,
                     getString(string.search)
                 ),
                 DrawerItem(
                     DEFAULT_DRAWER_ITEM,
-                    ProfileFragment(),
+                    DashboardGraphDirections.actionGlobalProfileFragment(),
                     drawable.ic_profile,
                     getString(string.profile)
                 ),
                 DrawerItem(
                     UNDERLINED_DRAWER_ITEM,
-                    AddPostFragment(),
+                    DashboardGraphDirections.actionGlobalAddPostFragment2(),
                     drawable.ic_add,
                     getString(string.add_post)
                 ),
@@ -132,27 +138,14 @@ class DashboardFragment :
         )
         drawerAdapter.onMenuClick = {
             it?.let {
-                if (it.icon == drawable.ic_profile)
-                    findNavController().navigate(R.id.action_dashboardFragment_to_profileFragment2)
-                else
-                    it.fragmentId?.let { fragment -> setCurrentFragment(fragment) }
+                it.action?.let { action -> navController.navigate(action) }
             }
         }
         drawerAdapter.onLogOutClick = {
-
             if (it == DRAWER_LOG_OUT_INDEX) {
                 FirebaseAuth.getInstance().signOut()
                 findNavController().navigate(R.id.action_global_logInFragment)
             }
         }
     }
-
-    private fun setCurrentFragment(fragment: Fragment) {
-        childFragmentManager.beginTransaction().apply {
-            replace(R.id.dashNavHostFragment, fragment)
-            commit()
-        }
-    }
-
-
 }

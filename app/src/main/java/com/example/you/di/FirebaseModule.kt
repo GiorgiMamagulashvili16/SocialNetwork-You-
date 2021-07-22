@@ -23,6 +23,6 @@ object FirebaseModule {
 
     @Provides
     @Singleton
-    fun provideUserCollection() = FirebaseFirestore.getInstance()
+    fun provideFireStore() = FirebaseFirestore.getInstance()
 
 }

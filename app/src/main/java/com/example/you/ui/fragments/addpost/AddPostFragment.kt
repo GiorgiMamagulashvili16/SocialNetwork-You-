@@ -51,14 +51,14 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
             when (it) {
                 is Resource.Success -> {
                     dismissLoadingDialog()
-
-                    findNavController().navigate(R.id.action_global_dashboardFragment)
+                    findNavController().navigate(R.id.action_addPostFragment2_to_profileFragment)
                 }
                 is Resource.Error -> {
                     dismissLoadingDialog()
                 }
                 is Resource.Loading -> {
-                    createLoadingDialog()
+                    it.errorMessage?.let { it1 -> showErrorDialog(it1) }
+                    showLoadingDialog()
                 }
             }
         })
@@ -79,7 +79,7 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
             binding.ivPostImage.setImageURI(uri)
             postImageView = uri
         } else {
-            val error = result.error
+//            val error = result.error
         }
     }
 

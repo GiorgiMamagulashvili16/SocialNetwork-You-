@@ -27,10 +27,20 @@
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/ivProfile"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvDate"
         app:layout_constraintStart_toEndOf="@+id/ivProfile"
         app:layout_constraintTop_toTopOf="@+id/ivProfile" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="15sp"
+        android:layout_margin="3dp"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvPostText"
         android:layout_width="match_parent"
@@ -74,17 +84,19 @@
         app:layout_constraintTop_toBottomOf="@+id/ivPostImage" />
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvLikeTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:fontFamily="@font/poppins_medium"
         android:textColor="@color/gray"
         android:textSize="15sp"
-        app:layout_constraintEnd_toStartOf="@+id/appCompatTextView"
+        android:text="@string/likedby"
+        app:layout_constraintEnd_toStartOf="@+id/tvLikedBy"
         app:layout_constraintTop_toBottomOf="@+id/ivPostImage" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/appCompatTextView"
+        android:id="@+id/tvLikedBy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"

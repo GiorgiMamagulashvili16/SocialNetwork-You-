@@ -23,6 +23,17 @@ class RadiusViewModel @Inject constructor(
     }
     val nearbyPosts: LiveData<Resource<List<Post>>> = _nearbyPosts
 
+    private val _postLikes by lazy {
+        MutableLiveData<Resource<Boolean>>()
+    }
+    val postLikes: LiveData<Resource<Boolean>> = _postLikes
+
+    fun getPostLikes(post: Post) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            _postLikes.postValue(repository.getPostLikes(post))
+        }
+    }
+
     fun getNearbyPosts(location: Location) = viewModelScope.launch {
         _nearbyPosts.postValue(Resource.Loading())
         withContext(Dispatchers.IO) {

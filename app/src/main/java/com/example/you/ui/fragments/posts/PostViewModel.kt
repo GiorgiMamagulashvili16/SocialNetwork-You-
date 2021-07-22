@@ -22,6 +22,28 @@ class PostViewModel @Inject constructor(
         MutableLiveData<Resource<List<Post>>>()
     }
     val posts: LiveData<Resource<List<Post>>> = _posts
+    private val _addComment by lazy {
+        MutableLiveData<Resource<Any>>()
+    }
+    val addComment: LiveData<Resource<Any>> = _addComment
+    private val _postLikes by lazy {
+        MutableLiveData<Resource<Boolean>>()
+    }
+    val postLikes: LiveData<Resource<Boolean>> = _postLikes
+
+    fun getPostLikes(post: Post) = viewModelScope.launch {
+        withContext(Dispatchers.IO) {
+            _postLikes.postValue(repository.getPostLikes(post))
+        }
+    }
+
+    fun addComment(postId: String, text: String) = viewModelScope.launch {
+        _addComment.postValue(Resource.Loading())
+        withContext(Dispatchers.IO) {
+            _addComment.postValue(Resource.Success(repository.addComment(postId, text)))
+        }
+    }
+
     fun getPosts() = viewModelScope.launch {
         _posts.postValue(Resource.Loading())
         withContext(Dispatchers.IO) {

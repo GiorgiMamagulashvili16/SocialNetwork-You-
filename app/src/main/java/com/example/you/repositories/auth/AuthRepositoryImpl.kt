@@ -3,7 +3,6 @@ package com.example.you.repositories.auth
 
 import android.net.Uri
 import com.example.you.models.user.UserModel
-import com.example.you.util.Constants
 import com.example.you.util.Constants.USER_COLLECTION_NAME
 import com.example.you.util.Resource
 import com.google.firebase.auth.AuthResult
@@ -39,7 +38,7 @@ class AuthRepositoryImpl @Inject constructor(
                 userName,
                 lat = lat,
                 long = long,
-                profileImageUrl = imageUrl
+                profileImageUrl = imageUrl,
             )
             users.document(uid).set(user).await()
             Resource.Success(result)

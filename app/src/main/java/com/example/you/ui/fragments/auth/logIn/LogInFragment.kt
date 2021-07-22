@@ -1,7 +1,6 @@
 package com.example.you.ui.fragments.auth.logIn
 
 import android.graphics.Color
-import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -10,8 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.you.R
 import com.example.you.databinding.LogInFragmentBinding
 import com.example.you.extensions.createInfoSnackBar
-import com.example.you.extensions.hide
-import com.example.you.extensions.show
+import com.example.you.extensions.slideUp
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Resource
@@ -36,7 +34,17 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
         }
         observe()
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+        slideUp(
+            requireContext(),
+            binding.imageView,
+            binding.etEmail,
+            binding.textView1,
+            binding.textView2,
+            binding.etPassword,
+            binding.btnSignIn
+        )
     }
+
     override fun onStart() {
         super.onStart()
         val user = Firebase.auth.currentUser
@@ -63,11 +71,12 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
                     findNavController().navigate(R.id.action_logInFragment_to_dashboardFragment)
                 }
                 is Resource.Error -> {
-                    d("LOGINERROR","${it.errorMessage}")
+                    it.errorMessage?.let { message -> showErrorDialog(message) }
                     dismissLoadingDialog()
                 }
                 is Resource.Loading -> {
-                    createLoadingDialog()
+                    showLoadingDialog()
+
                 }
             }
         })

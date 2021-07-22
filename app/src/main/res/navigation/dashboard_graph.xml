@@ -8,25 +8,85 @@
         android:id="@+id/postFragment"
         android:name="com.example.you.ui.fragments.posts.PostFragment"
         android:label="post_fragment"
-        tools:layout="@layout/post_fragment" />
+        tools:layout="@layout/post_fragment">
+        <action
+            android:id="@+id/action_postFragment_to_otherUserProfileFragment"
+            app:destination="@id/otherUserProfileFragment" />
+        <action
+            android:id="@+id/action_postFragment_to_bottomSheetComments"
+            app:destination="@id/bottomSheetComments" />
+    </fragment>
     <fragment
         android:id="@+id/radiusFragment"
         android:name="com.example.you.ui.fragments.radius.RadiusFragment"
         android:label="radius_fragment"
-        tools:layout="@layout/radius_fragment" />
+        tools:layout="@layout/radius_fragment">
+        <action
+            android:id="@+id/action_radiusFragment_to_otherUserProfileFragment"
+            app:destination="@id/otherUserProfileFragment" />
+        <action
+            android:id="@+id/action_radiusFragment_to_bottomSheetComments"
+            app:destination="@id/bottomSheetComments" />
+    </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.you.ui.fragments.search.SearchFragment"
         android:label="search_fragment"
         tools:layout="@layout/search_fragment" />
     <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.example.you.ui.fragments.my_profile.ProfileFragment"
-        android:label="profile_fragment"
-        tools:layout="@layout/profile_fragment" />
-    <fragment
         android:id="@+id/addPostFragment2"
         android:name="com.example.you.ui.fragments.addpost.AddPostFragment"
         android:label="add_post_fragment"
-        tools:layout="@layout/add_post_fragment" />
+        tools:layout="@layout/add_post_fragment" >
+        <action
+            android:id="@+id/action_addPostFragment2_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/otherUserProfileFragment"
+        android:name="com.example.you.ui.fragments.user_profile.OtherUserProfileFragment"
+        android:label="other_user_profile_fragment"
+        tools:layout="@layout/other_user_profile_fragment">
+        <action
+            android:id="@+id/action_otherUserProfileFragment_to_postFragment"
+            app:destination="@id/postFragment" />
+        <action
+            android:id="@+id/action_otherUserProfileFragment_to_bottomSheetComments"
+            app:destination="@id/bottomSheetComments" />
+    </fragment>
+    <dialog
+        android:id="@+id/bottomSheetComments"
+        android:name="com.example.you.ui.fragments.bottom_sheets.BottomSheetComments"
+        android:label="BottomSheetComments">
+        <argument
+            android:name="postId"
+            app:argType="string" />
+    </dialog>
+    <action
+        android:id="@+id/action_global_radiusFragment"
+        app:destination="@id/radiusFragment" />
+    <action android:id="@+id/action_global_addPostFragment2"
+        app:destination="@id/addPostFragment2" />
+    <action android:id="@+id/action_global_postFragment" app:destination="@id/postFragment" /><action android:id="@+id/action_global_searchFragment" app:destination="@id/searchFragment"/>
+    <action android:id="@+id/action_global_bottomSheetComments" app:destination="@id/bottomSheetComments" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.you.ui.fragments.my_profile.ProfileFragment"
+        android:label="profile_fragment"
+        tools:layout="@layout/profile_fragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+    </fragment>
+    <action android:id="@+id/action_global_profileFragment" app:destination="@id/profileFragment" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.you.ui.fragments.my_profile.edit_profile.EditProfileFragment"
+        android:label="edit_profile_fragment"
+        tools:layout="@layout/edit_profile_fragment" >
+        <action
+            android:id="@+id/action_editProfileFragment_to_profileFragment"
+            app:destination="@id/profileFragment"
+            app:popUpTo="@id/editProfileFragment" />
+    </fragment>
 </navigation>

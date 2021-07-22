@@ -1,4 +1,4 @@
-package com.example.you.adapters
+package com.example.you.adapters.posts
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +9,11 @@ import com.example.you.databinding.RowGridImageItemBinding
 import com.example.you.extensions.getShapeableImage
 import com.example.you.models.post.Post
 
+typealias onImageClick = (post: Post) -> Unit
+
 class GridPostAdapter : RecyclerView.Adapter<GridPostAdapter.PostViewHolder>() {
+
+    lateinit var onImageClick: onImageClick
 
     inner class PostViewHolder(val binding: RowGridImageItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -18,6 +22,9 @@ class GridPostAdapter : RecyclerView.Adapter<GridPostAdapter.PostViewHolder>() {
             post = differ.currentList[absoluteAdapterPosition]
             binding.apply {
                 tvGridImage.getShapeableImage(post.postImageUrl)
+                root.setOnClickListener {
+                    onImageClick.invoke(post)
+                }
             }
         }
     }

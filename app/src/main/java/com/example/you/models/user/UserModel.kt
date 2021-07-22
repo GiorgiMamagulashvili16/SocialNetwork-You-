@@ -1,5 +1,7 @@
 package com.example.you.models.user
 
+import android.net.Uri
+
 import com.example.you.util.Constants.DEFAULT_PROFILE_IMAGE_URL
 
 data class UserModel(
@@ -8,5 +10,11 @@ data class UserModel(
     val description: String = "",
     val lat: Number = 0.0,
     val long: Number = 0.0,
-    val profileImageUrl: String = DEFAULT_PROFILE_IMAGE_URL
+    val profileImageUrl: String = DEFAULT_PROFILE_IMAGE_URL,
+)
+data class ProfileUpdate(
+    val uid: String = "",
+    val userName: String = "",
+    val description: String = "",
+    val profileImageUri: Uri? = null,
 )
