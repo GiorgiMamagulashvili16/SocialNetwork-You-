@@ -4,9 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import androidx.paging.liveData
 import com.example.you.models.post.Post
+import com.example.you.paging_source.FireStorePagingSource
 import com.example.you.repositories.posts.PostRepositoryImp
+import com.example.you.util.Constants.POST_PAGE_SIZE
 import com.example.you.util.Resource
+import com.google.firebase.firestore.Query
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PostViewModel @Inject constructor(
-    private val repository: PostRepositoryImp
+    private val repository: PostRepositoryImp,
 ) : ViewModel() {
 
     private val _posts by lazy {
@@ -30,6 +37,7 @@ class PostViewModel @Inject constructor(
         MutableLiveData<Resource<Boolean>>()
     }
     val postLikes: LiveData<Resource<Boolean>> = _postLikes
+
 
     fun getPostLikes(post: Post) = viewModelScope.launch {
         withContext(Dispatchers.IO) {

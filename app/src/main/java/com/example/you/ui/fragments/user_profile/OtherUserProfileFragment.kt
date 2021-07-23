@@ -15,8 +15,6 @@ import com.example.you.extensions.getShapeableImage
 import com.example.you.extensions.setRandomCover
 import com.example.you.extensions.slideUp
 import com.example.you.ui.base.BaseFragment
-import com.example.you.util.Constants.BUNDLE_KEY_USER_ID
-import com.example.you.util.Constants.REQUEST_KEY_USER_ID
 import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint

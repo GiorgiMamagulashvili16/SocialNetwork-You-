@@ -6,6 +6,7 @@ import com.example.you.repositories.posts.PostRepository
 import com.example.you.repositories.posts.PostRepositoryImp
 import com.example.you.repositories.userProfile.UserProfileRepoImpl
 import com.example.you.repositories.userProfile.UserProfileRepository
+import com.example.you.util.ResponseHandler
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -33,8 +34,9 @@ object AppModule {
     fun providePostRepo(
         auth: FirebaseAuth,
         storage: FirebaseStorage,
-        fireStore: FirebaseFirestore
-    ): PostRepository = PostRepositoryImp(auth, storage, fireStore)
+        fireStore: FirebaseFirestore,
+        responseHandler: ResponseHandler
+    ): PostRepository = PostRepositoryImp(auth, storage, fireStore,responseHandler)
 
     @Provides
     @Singleton
@@ -43,4 +45,8 @@ object AppModule {
         storage: FirebaseStorage,
         fireStore: FirebaseFirestore
     ): UserProfileRepository = UserProfileRepoImpl(auth, storage, fireStore)
+
+    @Provides
+    @Singleton
+    fun providesResponseHandler() = ResponseHandler()
 }

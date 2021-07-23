@@ -3,19 +3,13 @@ package com.example.you.ui.fragments.posts
 import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
-import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.you.R
 import com.example.you.adapters.posts.PostAdapter
 import com.example.you.databinding.PostFragmentBinding
-import com.example.you.models.post.Post
 import com.example.you.ui.base.BaseFragment
-import com.example.you.util.Constants.BUNDLE_KEY_USER_ID
-import com.example.you.util.Constants.REQUEST_KEY_USER_ID
 import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,7 +26,7 @@ class PostFragment : BaseFragment<PostFragmentBinding>(PostFragmentBinding::infl
 
     private fun init() {
         viewModel.getPosts()
-        observePosts()
+
         initRecycleView()
         binding.root.setOnRefreshListener {
             viewModel.getPosts()
@@ -40,7 +34,9 @@ class PostFragment : BaseFragment<PostFragmentBinding>(PostFragmentBinding::infl
         }
         observeAddCommentResponse()
         observePostLikes()
+        observePosts()
     }
+
 
     private fun observePosts() {
         viewModel.posts.observe(viewLifecycleOwner, {
@@ -100,7 +96,11 @@ class PostFragment : BaseFragment<PostFragmentBinding>(PostFragmentBinding::infl
             adapter = postAdapter
         }
         postAdapter.onProfileClick = {
-            findNavController().navigate(PostFragmentDirections.actionPostFragmentToOtherUserProfileFragment(it))
+            findNavController().navigate(
+                PostFragmentDirections.actionPostFragmentToOtherUserProfileFragment(
+                    it
+                )
+            )
         }
         postAdapter.onCommentClick = {
             showAddCommentDialog(it)
@@ -113,6 +113,13 @@ class PostFragment : BaseFragment<PostFragmentBinding>(PostFragmentBinding::infl
             currentPostIndex = index
             post.isLiked = !post.isLiked
             viewModel.getPostLikes(post)
+        }
+        postAdapter.onLikedByClick = {
+            findNavController().navigate(
+                PostFragmentDirections.actionPostFragmentToBottomSheetLikes(
+                    it.toTypedArray()
+                )
+            )
         }
     }
 }

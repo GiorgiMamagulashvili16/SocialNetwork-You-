@@ -19,6 +19,7 @@ typealias onCommentClick = (postId: String) -> Unit
 typealias onViewCommentClick = (postId: String) -> Unit
 typealias onLikeClick = (post: Post, index: Int) -> Unit
 typealias onDeleteClick = (postId: String) -> Unit
+typealias onLikedByClick = (users: List<String>) -> Unit
 
 class PostAdapter : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
     lateinit var onProfileClick: onProfileClick
@@ -26,6 +27,7 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
     lateinit var onViewCommentClick: onViewCommentClick
     lateinit var onLikeClick: onLikeClick
     lateinit var onDeleteClick: onDeleteClick
+    lateinit var onLikedByClick: onLikedByClick
 
     inner class PostViewHolder(val binding: RowPostItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -38,10 +40,10 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
                 ivPostImage.getShapeableImage(post.postImageUrl)
                 ivProfile.getShapeableImage(post.authorProfileImageUrl)
 
-                if (post.authorId == FirebaseAuth.getInstance().uid!!){
-                    btnDeletePost.isVisible =true
+                if (post.authorId == FirebaseAuth.getInstance().uid!!) {
+                    btnDeletePost.isVisible = true
                     ivProfile.isVisible = false
-                    tvUserName.isVisible =false
+                    tvUserName.isVisible = false
                 }
 
                 btnLike.setImageResource(if (post.isLiked) drawable.ic_liked else drawable.ic_heart)
@@ -73,6 +75,9 @@ class PostAdapter : RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
                 btnLike.isEnabled = !post.likeLoading
                 btnDeletePost.setOnClickListener {
                     onDeleteClick.invoke(post.postId)
+                }
+                tvLikedBy.setOnClickListener {
+                    onLikedByClick.invoke(post.likedBy)
                 }
             }
 

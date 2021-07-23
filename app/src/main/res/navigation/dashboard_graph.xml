@@ -15,6 +15,9 @@
         <action
             android:id="@+id/action_postFragment_to_bottomSheetComments"
             app:destination="@id/bottomSheetComments" />
+        <action
+            android:id="@+id/action_postFragment_to_bottomSheetLikes"
+            app:destination="@id/bottomSheetLikes" />
     </fragment>
     <fragment
         android:id="@+id/radiusFragment"
@@ -27,6 +30,9 @@
         <action
             android:id="@+id/action_radiusFragment_to_bottomSheetComments"
             app:destination="@id/bottomSheetComments" />
+        <action
+            android:id="@+id/action_radiusFragment_to_bottomSheetLikes"
+            app:destination="@id/bottomSheetLikes" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -60,6 +66,9 @@
         <argument
             android:name="uid"
             app:argType="string" />
+        <action
+            android:id="@+id/action_otherUserProfileFragment_to_bottomSheetLikes"
+            app:destination="@id/bottomSheetLikes" />
     </fragment>
     <dialog
         android:id="@+id/bottomSheetComments"
@@ -96,4 +105,12 @@
             app:destination="@id/profileFragment"
             app:popUpTo="@id/editProfileFragment" />
     </fragment>
+    <dialog
+        android:id="@+id/bottomSheetLikes"
+        android:name="com.example.you.ui.fragments.bottom_sheets.BottomSheetLikes"
+        android:label="BottomSheetLikes" >
+        <argument
+            android:name="uids"
+            app:argType="string[]" />
+    </dialog>
 </navigation>

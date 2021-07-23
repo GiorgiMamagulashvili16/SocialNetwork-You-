@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.you.models.post.Comment
+import com.example.you.models.user.UserModel
 import com.example.you.repositories.posts.PostRepositoryImp
 import com.example.you.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +26,17 @@ class CommentsViewModel @Inject constructor(
         MutableLiveData<Resource<Any>>()
     }
     val deleteComment: LiveData<Resource<Any>> = _deleteComment
+
+    private val _likedByResponse by lazy {
+        MutableLiveData<Resource<List<UserModel>>>()
+    }
+    val likedByResponse: LiveData<Resource<List<UserModel>>> = _likedByResponse
+    fun getLikedBy(users: List<String>) = viewModelScope.launch {
+        _likedByResponse.postValue(Resource.Loading())
+        withContext(Dispatchers.IO) {
+            _likedByResponse.postValue(repository.getLikedByUsers(users))
+        }
+    }
 
     fun deleteComment(commentId: String) = viewModelScope.launch {
         _deleteComment.postValue(Resource.Loading())

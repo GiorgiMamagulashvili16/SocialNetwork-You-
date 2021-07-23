@@ -14,12 +14,5 @@ object Constants {
 
     const val DRAWER_LOG_OUT_INDEX = 5
 
-    const val REQUEST_KEY_USER_ID = "user_id"
-    const val BUNDLE_KEY_USER_ID = "bundle_key_user_id"
-
-    const val REQUEST_KEY_POST_ID = "post_id"
-    const val BUNDLE_KEY_POST_ID = "bundle_key_post_id"
-
-    const val LIST_FR_REQUEST_KEY_POST_ID = "post_id_list"
-    const val LIST_FR_BUNDLE_KEY_POST_ID = "bundle_key_post_id_list"
+    const val POST_PAGE_SIZE = 5
 }

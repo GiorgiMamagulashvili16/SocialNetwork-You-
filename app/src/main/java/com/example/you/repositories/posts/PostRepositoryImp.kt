@@ -10,6 +10,7 @@ import com.example.you.util.Constants.COMMENTS_COLLECTION_NAME
 import com.example.you.util.Constants.POSTS_COLLECTION_NAME
 import com.example.you.util.Constants.USER_COLLECTION_NAME
 import com.example.you.util.Resource
+import com.example.you.util.ResponseHandler
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -24,10 +25,11 @@ class PostRepositoryImp @Inject constructor(
     private val auth: FirebaseAuth,
     private val storage: FirebaseStorage,
     private val fireStore: FirebaseFirestore,
+    private val responseHandler: ResponseHandler
 ) : PostRepository {
-    private val users = fireStore.collection(USER_COLLECTION_NAME)
-    private val posts = fireStore.collection(POSTS_COLLECTION_NAME)
-    private val comments = fireStore.collection(COMMENTS_COLLECTION_NAME)
+    private val userCollection = fireStore.collection(USER_COLLECTION_NAME)
+    private val postCollection = fireStore.collection(POSTS_COLLECTION_NAME)
+    private val commentCollection = fireStore.collection(COMMENTS_COLLECTION_NAME)
 
     override suspend fun addPost(imageUri: Uri, postText: String): Resource<Any> =
         withContext(Dispatchers.IO) {
@@ -43,7 +45,7 @@ class PostRepositoryImp @Inject constructor(
                     postImageUrl = postImage,
                     date = System.currentTimeMillis()
                 )
-                posts.document(postId).set(post).await()
+                postCollection.document(postId).set(post).await()
                 Resource.Success(Any())
             } catch (e: Exception) {
                 Resource.Error(e.toString())
@@ -54,7 +56,7 @@ class PostRepositoryImp @Inject constructor(
         return@withContext try {
             val uid = auth.uid!!
             val allPosts =
-                posts.whereNotEqualTo("authorId", uid)
+                postCollection.whereNotEqualTo("authorId", uid)
                     .orderBy("authorId", Query.Direction.DESCENDING)
                     .get()
                     .await().toObjects(Post::class.java).onEach {
@@ -65,9 +67,9 @@ class PostRepositoryImp @Inject constructor(
                             isLiked = uid in it.likedBy
                         }
                     }
-            Resource.Success(allPosts)
+            responseHandler.handleSuccess(allPosts)
         } catch (e: Exception) {
-            Resource.Error(e.toString())
+            responseHandler.handleException(e)
         }
     }
 
@@ -77,7 +79,8 @@ class PostRepositoryImp @Inject constructor(
                 val uid = auth.uid!!
                 val nearbyPost = mutableListOf<Post>()
 
-                posts.whereNotEqualTo("authorId", uid).get().await().toObjects(Post::class.java)
+                postCollection.whereNotEqualTo("authorId", uid).get().await()
+                    .toObjects(Post::class.java)
                     .forEach {
                         val user = getUser(it.authorId).data!!
                         it.apply {
@@ -104,7 +107,7 @@ class PostRepositoryImp @Inject constructor(
 
     override suspend fun getUser(uid: String): Resource<UserModel> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val currentUser = users.document(uid).get().await()
+            val currentUser = userCollection.document(uid).get().await()
             val currentUserModel = UserModel(
                 currentUser["uid"] as String,
                 currentUser["userName"] as String,
@@ -135,7 +138,7 @@ class PostRepositoryImp @Inject constructor(
                         date = System.currentTimeMillis(),
                         commentText = text
                     )
-                comments.document(commentId).set(comment).await()
+                commentCollection.document(commentId).set(comment).await()
                 Resource.Success(Any())
             } catch (e: Exception) {
                 Resource.Error(e.toString())
@@ -145,7 +148,7 @@ class PostRepositoryImp @Inject constructor(
     override suspend fun getCommentForPost(postId: String): Resource<List<Comment>> =
         withContext(Dispatchers.IO) {
             return@withContext try {
-                val allComments = comments.whereEqualTo("postId", postId).get().await()
+                val allComments = commentCollection.whereEqualTo("postId", postId).get().await()
                     .toObjects(Comment::class.java)
                 Resource.Success(allComments)
             } catch (e: Exception) {
@@ -156,7 +159,7 @@ class PostRepositoryImp @Inject constructor(
     override suspend fun deleteComment(commentId: String): Resource<Any> =
         withContext(Dispatchers.IO) {
             return@withContext try {
-                comments.document(commentId).delete().await()
+                commentCollection.document(commentId).delete().await()
                 Resource.Success(Any())
             } catch (e: Exception) {
                 Resource.Error(e.toString())
@@ -168,10 +171,10 @@ class PostRepositoryImp @Inject constructor(
             var isLiked = false
             fireStore.runTransaction { transaction ->
                 val uid = auth.uid!!
-                val postResult = transaction.get(posts.document(post.postId))
+                val postResult = transaction.get(postCollection.document(post.postId))
                 val currentLikes = postResult.toObject(Post::class.java)?.likedBy ?: listOf()
                 transaction.update(
-                    posts.document(post.postId),
+                    postCollection.document(post.postId),
                     "likedBy",
                     if (uid in currentLikes) currentLikes - uid else {
                         isLiked = true
@@ -195,7 +198,7 @@ class PostRepositoryImp @Inject constructor(
         withContext(Dispatchers.IO) {
             return@withContext try {
                 val userList = mutableListOf<UserModel>()
-                val users = users.whereGreaterThanOrEqualTo(
+                val users = userCollection.whereGreaterThanOrEqualTo(
                     "userName", query.toUpperCase(
                         Locale.ROOT
                     )
@@ -214,4 +217,23 @@ class PostRepositoryImp @Inject constructor(
             }
         }
 
+    override suspend fun getLikedByUsers(uids: List<String>): Resource<List<UserModel>> =
+        withContext(Dispatchers.IO) {
+            return@withContext try {
+                val userList = mutableListOf<UserModel>()
+                val user = userCollection.whereIn("uid", uids).get().await()
+                user.documents.forEach {
+                    val userr = UserModel(
+                        uid = it["uid"] as String,
+                        userName = it["userName"] as String,
+                        profileImageUrl = it["profileImageUrl"] as String
+                    )
+                    userList.add(userr)
+                }
+                Resource.Success(userList)
+            } catch (e: Exception) {
+                Resource.Error(e.toString())
+            }
+
+        }
 }
