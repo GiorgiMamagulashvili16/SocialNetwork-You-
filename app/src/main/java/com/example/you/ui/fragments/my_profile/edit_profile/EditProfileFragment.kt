@@ -44,6 +44,9 @@ class EditProfileFragment :
             binding.btnBack,
             binding.btnAddProfileImage
         )
+        binding.btnBack.setOnClickListener {
+            findNavController().navigate(EditProfileFragmentDirections.actionEditProfileFragmentToProfileFragment())
+        }
     }
 
     private fun observeCurrentImage() {

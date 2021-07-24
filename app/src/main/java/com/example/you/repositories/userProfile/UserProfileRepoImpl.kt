@@ -60,16 +60,21 @@ class UserProfileRepoImpl @Inject constructor(
         profileUpdate: ProfileUpdate
     ): Resource<Any> = withContext(Dispatchers.IO) {
         return@withContext try {
-
-            val imageUrl = profileUpdate.profileImageUri?.let {
-                updateProfileImage(profileUpdate.uid, it).data.toString()
+            var imageUrl: String? = null
+            if (profileUpdate.profileImageUri != null) {
+                imageUrl = updateProfileImage(
+                    profileUpdate.uid,
+                    profileUpdate.profileImageUri
+                ).data.toString()
             }
+
+
             val infoMap = mutableMapOf(
                 "userName" to profileUpdate.userName,
                 "description" to profileUpdate.description
             )
-            imageUrl?.let {
-                infoMap["profileImageUrl"] = it
+            if (imageUrl != null) {
+                infoMap["profileImageUrl"] = imageUrl
             }
             users.document(profileUpdate.uid).update(infoMap.toMap()).await()
 
@@ -99,6 +104,7 @@ class UserProfileRepoImpl @Inject constructor(
             Resource.Error(e.toString())
         }
     }
+
     override suspend fun getUserPosts(authorId: String): Resource<List<Post>> =
         withContext(Dispatchers.IO) {
             return@withContext try {

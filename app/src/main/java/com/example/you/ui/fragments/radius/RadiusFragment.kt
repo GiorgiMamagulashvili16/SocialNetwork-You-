@@ -4,9 +4,11 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Looper
 import android.util.Log
+import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
@@ -47,7 +49,12 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
             when (it) {
                 is Resource.Success -> {
                     binding.root.isRefreshing = false
-                    postAdapter.differ.submitList(it.data)
+                    d("NEARNEAR","${it.data}")
+                    if (it.data!!.isEmpty()){
+                        binding.tvErrorText.isVisible = true
+                    }else{
+                        postAdapter.differ.submitList(it.data)
+                    }
                 }
                 is Resource.Error -> {
                     it.errorMessage?.let { message -> showErrorDialog(message) }

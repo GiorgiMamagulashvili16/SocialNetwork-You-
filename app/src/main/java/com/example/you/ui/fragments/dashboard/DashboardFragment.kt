@@ -1,18 +1,16 @@
 package com.example.you.ui.fragments.dashboard
 
-import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.you.DashboardGraphDirections
-import com.example.you.MainGraphDirections
 import com.example.you.R
 import com.example.you.adapters.DrawerAdapter
 import com.example.you.databinding.DashboardFragmentBinding
@@ -22,9 +20,9 @@ import com.example.you.ui.base.BaseFragment
 import com.example.you.util.Constants.DEFAULT_DRAWER_ITEM
 import com.example.you.util.Constants.DRAWER_LOG_OUT_INDEX
 import com.example.you.util.Constants.UNDERLINED_DRAWER_ITEM
-import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 typealias drawable = R.drawable
 typealias string = R.string
@@ -46,8 +44,10 @@ class DashboardFragment :
         initToolbar()
         initDrawer()
         setListeners()
-        observeCurrentUser()
-        viewModel.getUser(auth.uid!!)
+        observeCurUser()
+        lifecycleScope.launch {
+            viewModel.getUser()
+        }
         val host =
             childFragmentManager.findFragmentById(R.id.dashNavHostFragment) as NavHostFragment
         navController = host.findNavController()
@@ -64,20 +64,15 @@ class DashboardFragment :
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
     }
 
-    private fun observeCurrentUser() {
-        viewModel.curUser.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    binding.apply {
-                        ivToolbarProfile.getShapeableImage(it.data!!.profileImageUrl)
-                        tvToolbarUserName.text = it.data.userName
-                    }
-                }
-                is Resource.Error -> d("CURRENTUSERERROR", "${it.errorMessage}")
-                else -> Unit
-            }
+    private fun observeCurUser() {
+        viewModel.curUserImage.observe(viewLifecycleOwner, {
+            binding.ivToolbarProfile.getShapeableImage(it)
+        })
+        viewModel.curUserUserName.observe(viewLifecycleOwner, {
+            binding.tvToolbarUserName.text = it
         })
     }
+
 
     private fun setListeners() {
         binding.apply {

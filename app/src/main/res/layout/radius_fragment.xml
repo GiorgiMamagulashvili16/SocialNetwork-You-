@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/icon_color"
     tools:context=".ui.fragments.radius.RadiusFragment">
 
@@ -10,7 +11,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="5dp">
-
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/no_one_in_your_radius"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="35sp"
+            android:visibility="invisible"
+            android:textColor="@color/white"
+            android:fontFamily="@font/poppins_medium"
+            android:gravity="center"
+            android:id="@+id/tvErrorText"/>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvNearbyPosts"
             android:layout_width="match_parent"

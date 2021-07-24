@@ -45,7 +45,7 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
     private fun setListeners() {
         binding.ivCoverImage.setRandomCover()
         binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_global_dashboardFragment)
+            findNavController().navigate(ProfileFragmentDirections.actionGlobalPostFragment())
         }
         binding.btnEditProfile.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)

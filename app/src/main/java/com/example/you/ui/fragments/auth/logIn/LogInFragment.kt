@@ -1,9 +1,12 @@
 package com.example.you.ui.fragments.auth.logIn
 
+import android.Manifest
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.you.R
@@ -13,6 +16,7 @@ import com.example.you.extensions.slideUp
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Resource
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +34,7 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
             logIn()
         }
         binding.tvRegister.setOnClickListener {
-            findNavController().navigate(R.id.action_logInFragment_to_registrationFragment)
+            locationPermissionsRequest()
         }
         observe()
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
@@ -44,7 +48,44 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
             binding.btnSignIn
         )
     }
-
+    private fun locationPermissionsRequest() {
+        when {
+            hasFineLocationPermission() && hasCoarseLocationPermission() -> {
+                findNavController().navigate(R.id.action_logInFragment_to_registrationFragment)
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) -> {
+                Snackbar.make(
+                    binding.root,
+                    getString(string.app_needs_this_permission),
+                    Snackbar.LENGTH_INDEFINITE
+                ).apply {
+                    setAction(getString(string.ok)) {
+                        requestLocationPermissions(permissionsLauncher)
+                    }
+                }.show()
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) -> {
+                Snackbar.make(
+                    binding.root,
+                    getString(string.app_needs_this_permission),
+                    Snackbar.LENGTH_INDEFINITE
+                ).apply {
+                    setAction(getString(string.ok)) {
+                        requestLocationPermissions(permissionsLauncher)
+                    }
+                }.show()
+            }
+            else -> requestLocationPermissions(permissionsLauncher)
+        }
+    }
+    private val permissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { }
     override fun onStart() {
         super.onStart()
         val user = Firebase.auth.currentUser

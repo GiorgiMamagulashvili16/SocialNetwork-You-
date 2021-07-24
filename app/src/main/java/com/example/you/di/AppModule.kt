@@ -35,8 +35,7 @@ object AppModule {
         auth: FirebaseAuth,
         storage: FirebaseStorage,
         fireStore: FirebaseFirestore,
-        responseHandler: ResponseHandler
-    ): PostRepository = PostRepositoryImp(auth, storage, fireStore,responseHandler)
+    ): PostRepository = PostRepositoryImp(auth, storage, fireStore)
 
     @Provides
     @Singleton

@@ -3,6 +3,7 @@ package com.example.you.repositories.posts
 import android.location.Location
 import android.net.Uri
 import android.util.Log
+import android.util.Log.d
 import com.example.you.models.post.Comment
 import com.example.you.models.post.Post
 import com.example.you.models.user.UserModel
@@ -10,7 +11,6 @@ import com.example.you.util.Constants.COMMENTS_COLLECTION_NAME
 import com.example.you.util.Constants.POSTS_COLLECTION_NAME
 import com.example.you.util.Constants.USER_COLLECTION_NAME
 import com.example.you.util.Resource
-import com.example.you.util.ResponseHandler
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -25,7 +25,6 @@ class PostRepositoryImp @Inject constructor(
     private val auth: FirebaseAuth,
     private val storage: FirebaseStorage,
     private val fireStore: FirebaseFirestore,
-    private val responseHandler: ResponseHandler
 ) : PostRepository {
     private val userCollection = fireStore.collection(USER_COLLECTION_NAME)
     private val postCollection = fireStore.collection(POSTS_COLLECTION_NAME)
@@ -67,9 +66,9 @@ class PostRepositoryImp @Inject constructor(
                             isLiked = uid in it.likedBy
                         }
                     }
-            responseHandler.handleSuccess(allPosts)
+            Resource.Success(allPosts)
         } catch (e: Exception) {
-            responseHandler.handleException(e)
+            Resource.Error(e.toString())
         }
     }
 
@@ -98,6 +97,8 @@ class PostRepositoryImp @Inject constructor(
                         }
                         if (currentUserLocation.distanceTo(userLocation) < 5000.0)
                             nearbyPost.add(it)
+                        d("NEARNEARD", "${currentUserLocation.distanceTo(userLocation)}")
+                        d("NEARNEARD", "${nearbyPost}")
                     }
                 Resource.Success(nearbyPost)
             } catch (e: Exception) {
