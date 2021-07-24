@@ -51,61 +51,6 @@ class PostRepositoryImp @Inject constructor(
             }
         }
 
-    override suspend fun getAllPost(): Resource<List<Post>> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            val uid = auth.uid!!
-            val allPosts =
-                postCollection.whereNotEqualTo("authorId", uid)
-                    .orderBy("authorId", Query.Direction.DESCENDING)
-                    .get()
-                    .await().toObjects(Post::class.java).onEach {
-                        val user = getUser(it.authorId).data!!
-                        it.apply {
-                            authorUserName = user.userName
-                            authorProfileImageUrl = user.profileImageUrl
-                            isLiked = uid in it.likedBy
-                        }
-                    }
-            Resource.Success(allPosts)
-        } catch (e: Exception) {
-            Resource.Error(e.toString())
-        }
-    }
-
-    override suspend fun getNearbyPosts(location: Location): Resource<List<Post>> =
-        withContext(Dispatchers.IO) {
-            return@withContext try {
-                val uid = auth.uid!!
-                val nearbyPost = mutableListOf<Post>()
-
-                postCollection.whereNotEqualTo("authorId", uid).get().await()
-                    .toObjects(Post::class.java)
-                    .forEach {
-                        val user = getUser(it.authorId).data!!
-                        it.apply {
-                            authorUserName = user.userName
-                            authorProfileImageUrl = user.profileImageUrl
-                            isLiked = uid in it.likedBy
-                        }
-                        val currentUserLocation = Location("CurrentUserLocation").apply {
-                            latitude = location.latitude
-                            longitude = location.longitude
-                        }
-                        val userLocation = Location("userLocation").apply {
-                            latitude = user.lat as Double
-                            longitude = user.long as Double
-                        }
-                        if (currentUserLocation.distanceTo(userLocation) < 5000.0)
-                            nearbyPost.add(it)
-                        d("NEARNEARD", "${currentUserLocation.distanceTo(userLocation)}")
-                        d("NEARNEARD", "${nearbyPost}")
-                    }
-                Resource.Success(nearbyPost)
-            } catch (e: Exception) {
-                Resource.Error(e.toString())
-            }
-        }
-
     override suspend fun getUser(uid: String): Resource<UserModel> = withContext(Dispatchers.IO) {
         return@withContext try {
             val currentUser = userCollection.document(uid).get().await()

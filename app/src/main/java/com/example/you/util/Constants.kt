@@ -11,8 +11,13 @@ object Constants {
     const val USER_COLLECTION_NAME = "users"
     const val POSTS_COLLECTION_NAME = "posts"
     const val COMMENTS_COLLECTION_NAME = "comments"
+    const val AUTHOR_ID_FIELD=  "authorId"
 
     const val DRAWER_LOG_OUT_INDEX = 5
 
     const val POST_PAGE_SIZE = 5
+
+    const val CURRENT_USER_LOCATION = "current_user_location"
+    const val OTHER_USER_LOCATION = "other_user_location"
+    const val DISTANCE_RADIUS = 5000.0
 }

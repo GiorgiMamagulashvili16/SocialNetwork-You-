@@ -72,7 +72,7 @@ class OtherUserProfileFragment :
         viewModel.user.observe(viewLifecycleOwner, { user ->
             when (user) {
                 is Resource.Success -> {
-                    dismissLoadingDialog()
+                    dismissLinearLoadingDialog()
                     setUserData(
                         user.data?.profileImageUrl!!,
                         user.data.userName,
@@ -80,11 +80,11 @@ class OtherUserProfileFragment :
                     )
                 }
                 is Resource.Error -> {
-                    dismissLoadingDialog()
+                    dismissLinearLoadingDialog()
                     user.errorMessage?.let { message -> showErrorDialog(message) }
                 }
                 is Resource.Loading -> {
-                    showLoadingDialog()
+                    showLinearLoading()
                 }
             }
         })

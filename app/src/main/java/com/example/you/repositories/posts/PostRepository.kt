@@ -10,8 +10,6 @@ import com.example.you.util.Resource
 interface PostRepository {
 
     suspend fun addPost(imageUri: Uri, postText: String): Resource<Any>
-    suspend fun getAllPost(): Resource<List<Post>>
-    suspend fun getNearbyPosts(location: Location): Resource<List<Post>>
     suspend fun getUser(uid: String): Resource<UserModel>
     suspend fun addComment(postId: String, text: String): Resource<Any>
     suspend fun getCommentForPost(postId: String): Resource<List<Comment>>

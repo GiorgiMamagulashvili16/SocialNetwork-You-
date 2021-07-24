@@ -108,15 +108,15 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
         viewModel.logInResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    dismissLoadingDialog()
+                    dismissLinearLoadingDialog()
                     findNavController().navigate(R.id.action_logInFragment_to_dashboardFragment)
                 }
                 is Resource.Error -> {
                     it.errorMessage?.let { message -> showErrorDialog(message) }
-                    dismissLoadingDialog()
+                    dismissLinearLoadingDialog()
                 }
                 is Resource.Loading -> {
-                    showLoadingDialog()
+                    showLinearLoading()
 
                 }
             }

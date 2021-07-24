@@ -59,7 +59,7 @@ class EditProfileFragment :
         viewModel.userInfo.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    dismissLoadingDialog()
+                    dismissLinearLoadingDialog()
                     binding.apply {
                         etUserName.setText(it.data?.userName)
                         etDescription.setText(it.data?.description)
@@ -67,10 +67,10 @@ class EditProfileFragment :
                 }
                 is Resource.Error -> {
                     it.errorMessage?.let { message -> showErrorDialog(message) }
-                    dismissLoadingDialog()
+                    dismissLinearLoadingDialog()
                 }
                 is Resource.Loading -> {
-                    showLoadingDialog()
+                    showLinearLoading()
                 }
             }
         })
@@ -80,15 +80,15 @@ class EditProfileFragment :
         viewModel.editUserInfo.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    dismissLoadingDialog()
+                    dismissLinearLoadingDialog()
                     findNavController().navigate(R.id.action_editProfileFragment_to_profileFragment)
                 }
                 is Resource.Error -> {
                     d("EDITTEXTRESPONSE", "${it.errorMessage}")
-                    dismissLoadingDialog()
+                    dismissLinearLoadingDialog()
                 }
                 is Resource.Loading -> {
-                    showLoadingDialog()
+                    showLinearLoading()
                 }
             }
         })

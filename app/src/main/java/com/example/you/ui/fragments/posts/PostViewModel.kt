@@ -1,14 +1,23 @@
 package com.example.you.ui.fragments.posts
 
+import android.nfc.tech.MifareUltralight.PAGE_SIZE
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.you.models.post.Post
+import com.example.you.paging_source.AllPostSource
 import com.example.you.repositories.posts.PostRepositoryImp
 import com.example.you.util.Resource
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -16,12 +25,9 @@ import javax.inject.Inject
 @HiltViewModel
 class PostViewModel @Inject constructor(
     private val repository: PostRepositoryImp,
+    private val fireStore: FirebaseFirestore,
+    private val auth: FirebaseAuth
 ) : ViewModel() {
-
-    private val _posts by lazy {
-        MutableLiveData<Resource<List<Post>>>()
-    }
-    val posts: LiveData<Resource<List<Post>>> = _posts
     private val _addComment by lazy {
         MutableLiveData<Resource<Any>>()
     }
@@ -31,6 +37,14 @@ class PostViewModel @Inject constructor(
     }
     val postLikes: LiveData<Resource<Boolean>> = _postLikes
 
+    fun getAllPost(): Flow<PagingData<Post>> {
+        val pagingSource = AllPostSource(
+            fireStore, auth
+        )
+        return Pager(PagingConfig(PAGE_SIZE)) {
+            pagingSource
+        }.flow.cachedIn(viewModelScope)
+    }
 
     fun getPostLikes(post: Post) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
@@ -45,10 +59,4 @@ class PostViewModel @Inject constructor(
         }
     }
 
-    fun getPosts() = viewModelScope.launch {
-        _posts.postValue(Resource.Loading())
-        withContext(Dispatchers.IO) {
-            _posts.postValue(repository.getAllPost())
-        }
-    }
 }

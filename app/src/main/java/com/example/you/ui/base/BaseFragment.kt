@@ -14,10 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewbinding.ViewBinding
 import com.example.you.adapters.posts.PostAdapter
-import com.example.you.databinding.DialogAddCommentBinding
-import com.example.you.databinding.DialogDeletePostBinding
-import com.example.you.databinding.DialogErrorBinding
-import com.example.you.databinding.DialogLoadingBinding
+import com.example.you.databinding.*
 import com.example.you.extensions.createInfoSnackBar
 import com.example.you.extensions.setDialog
 import com.example.you.models.post.Post
@@ -33,6 +30,7 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
     private var _binding: VB? = null
     protected val binding get() = _binding!!
     private var loadingDialog: Dialog? = null
+    private var linearLoadingDialog:Dialog? = null
     private var deletePostDialog: Dialog? = null
     private var errorDialog: Dialog? = null
     private var addCommentDialog: Dialog? = null
@@ -143,6 +141,16 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
             }
         }
         errorDialog!!.show()
+    }
+
+    protected fun showLinearLoading(){
+        linearLoadingDialog = Dialog(requireContext())
+        val dialogBinding = DialogLinearLoadingBinding.inflate(layoutInflater)
+        linearLoadingDialog!!.setDialog(dialogBinding)
+        linearLoadingDialog!!.show()
+    }
+    protected fun dismissLinearLoadingDialog(){
+        linearLoadingDialog!!.dismiss()
     }
 
     protected fun showAddCommentDialog(postId: String) {

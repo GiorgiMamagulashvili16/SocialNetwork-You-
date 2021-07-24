@@ -72,15 +72,15 @@ class RegistrationFragment :
         viewModel.signUpResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    dismissLoadingDialog()
+                    dismissLinearLoadingDialog()
                     findNavController().navigate(R.id.action_registrationFragment_to_logInFragment)
                 }
                 is Resource.Error -> {
                     it.errorMessage?.let { message -> showErrorDialog(message) }
-                    dismissLoadingDialog()
+                    dismissLinearLoadingDialog()
                 }
                 is Resource.Loading -> {
-                    showLoadingDialog()
+                   showLinearLoading()
                 }
             }
         })

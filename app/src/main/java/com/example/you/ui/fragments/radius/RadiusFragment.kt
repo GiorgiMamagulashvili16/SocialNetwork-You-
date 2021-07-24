@@ -4,22 +4,24 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Looper
 import android.util.Log
-import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.you.adapters.posts.PostAdapter
+import com.example.you.adapters.PostPagingAdapter
 import com.example.you.databinding.RadiusFragmentBinding
 import com.example.you.ui.base.BaseFragment
 import com.example.you.util.Resource
 import com.google.android.gms.location.*
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
@@ -27,7 +29,7 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-    private val postAdapter: PostAdapter by lazy { PostAdapter() }
+    private val postAdapter: PostPagingAdapter by lazy { PostPagingAdapter() }
     private val viewModel: RadiusViewModel by viewModels()
     private var currentPostIndex: Int? = null
 
@@ -38,33 +40,20 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
 
     private fun init() {
         getLocation()
-        observePosts()
         initRecycle()
         observeAddCommentResponse()
         observePostLikes()
     }
 
-    private fun observePosts() {
-        viewModel.nearbyPosts.observe(viewLifecycleOwner, {
-            when (it) {
-                is Resource.Success -> {
-                    binding.root.isRefreshing = false
-                    d("NEARNEAR","${it.data}")
-                    if (it.data!!.isEmpty()){
-                        binding.tvErrorText.isVisible = true
-                    }else{
-                        postAdapter.differ.submitList(it.data)
-                    }
-                }
-                is Resource.Error -> {
-                    it.errorMessage?.let { message -> showErrorDialog(message) }
-                    binding.root.isRefreshing = false
-                }
-                is Resource.Loading -> {
-                    binding.root.isRefreshing = true
-                }
+    private fun observeLoadState() {
+        lifecycleScope.launch {
+            postAdapter.loadStateFlow.collect {
+                if (it.refresh is LoadState.Loading || it.append is LoadState.Loading)
+                    showLinearLoading()
+                else
+                    dismissLinearLoadingDialog()
             }
-        })
+        }
     }
 
     private fun getLocation() {
@@ -78,11 +67,12 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 super.onLocationResult(locationResult)
-                viewModel.getNearbyPosts(locationResult.lastLocation)
-                binding.root.setOnRefreshListener {
-                    viewModel.getNearbyPosts(locationResult.lastLocation)
-                    postAdapter.notifyDataSetChanged()
+                lifecycleScope.launch {
+                    viewModel.getNearbyPosts(locationResult.lastLocation).collect {
+                        postAdapter.submitData(lifecycle, it)
+                    }
                 }
+                observeLoadState()
             }
         }
         if (ActivityCompat.checkSelfPermission(
@@ -119,7 +109,7 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
             when (isLiked) {
                 is Resource.Success -> {
                     currentPostIndex?.let { index ->
-                        postAdapter.differ.currentList[index].apply {
+                        postAdapter.peek(index)?.apply {
                             this.isLiked = isLiked.data!!
                             this.likeLoading = false
                             if (isLiked.data) {
@@ -135,7 +125,7 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
                 }
                 is Resource.Loading -> {
                     currentPostIndex?.let { index ->
-                        postAdapter.differ.currentList[index].apply {
+                        postAdapter.peek(index)?.apply {
                             this.likeLoading = true
                         }
                     }
