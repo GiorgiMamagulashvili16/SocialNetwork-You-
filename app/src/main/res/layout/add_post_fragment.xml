@@ -67,11 +67,38 @@
         android:id="@+id/btnAddPost"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginTop="90dp"
+        android:layout_marginTop="130dp"
         android:background="@drawable/bg_button"
         android:text="@string/post"
         android:textColor="@color/white"
         android:textSize="21sp"
         app:layout_constraintTop_toBottomOf="@id/ivPostImage" />
 
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="92dp"
+        android:layout_marginRight="92dp"
+        app:checkedChip="@id/chipForAll"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivPostImage"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipsForRadius"
+            style="@style/CustomChipStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/for_my_radius" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipForAll"
+            style="@style/CustomChipStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/for_all" />
+    </com.google.android.material.chip.ChipGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>

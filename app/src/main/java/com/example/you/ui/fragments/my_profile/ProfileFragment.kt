@@ -69,15 +69,13 @@ class ProfileFragment : BaseFragment<ProfileFragmentBinding>(ProfileFragmentBind
         viewModel.user.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    dismissLinearLoadingDialog()
                     setUserData(it.data!!.description, it.data.userName, it.data.profileImageUrl)
+
                 }
                 is Resource.Error -> {
-                    dismissLinearLoadingDialog()
                     it.errorMessage?.let { message -> showErrorDialog(message) }
                 }
                 is Resource.Loading -> {
-                    showLinearLoading()
                 }
             }
         })

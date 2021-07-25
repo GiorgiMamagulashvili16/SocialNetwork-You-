@@ -12,6 +12,7 @@ import androidx.paging.cachedIn
 import com.example.you.models.post.Post
 import com.example.you.paging_source.AllPostSource
 import com.example.you.repositories.posts.PostRepositoryImp
+import com.example.you.util.Constants.POST_PAGE_SIZE
 import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -41,7 +42,7 @@ class PostViewModel @Inject constructor(
         val pagingSource = AllPostSource(
             fireStore, auth
         )
-        return Pager(PagingConfig(PAGE_SIZE)) {
+        return Pager(PagingConfig(POST_PAGE_SIZE)) {
             pagingSource
         }.flow.cachedIn(viewModelScope)
     }

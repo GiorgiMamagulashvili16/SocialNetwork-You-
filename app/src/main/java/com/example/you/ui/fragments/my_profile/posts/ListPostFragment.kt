@@ -14,6 +14,7 @@ import com.example.you.databinding.ListPostFragmentBinding
 import com.example.you.extensions.createInfoSnackBar
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
+import com.example.you.ui.fragments.my_profile.ProfileFragmentDirections
 import com.example.you.ui.fragments.my_profile.ProfileViewModel
 import com.example.you.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,6 +23,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class ListPostFragment : BaseFragment<ListPostFragmentBinding>(ListPostFragmentBinding::inflate) {
     private val postAdapter by lazy { PostAdapter() }
     private val viewModel: ProfileViewModel by viewModels()
+
+    private var currentPostId = ""
     override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
         init()
     }
@@ -29,23 +32,29 @@ class ListPostFragment : BaseFragment<ListPostFragmentBinding>(ListPostFragmentB
     private fun init() {
         initRec()
         viewModel.getPosts()
-        observe()
         observeDeletePostResponse()
+        observePostResponse()
+        observeDeleteCommentByPostResponse()
     }
 
-    private fun observe() {
+    private fun observePostResponse() {
         viewModel.posts.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
                     postAdapter.differ.submitList(it.data)
+                    dismissLinearLoadingDialog()
                 }
                 is Resource.Error -> {
-                    it.errorMessage?.let { it1 -> showErrorDialog(it1) }
+                    it.errorMessage?.let { message -> showErrorDialog(message) }
+                    dismissLinearLoadingDialog()
                 }
-                is Resource.Loading -> Unit
+                is Resource.Loading -> {
+                    showLinearLoading()
+                }
             }
         })
     }
+
 
     private fun observeDeletePostResponse() {
         viewModel.deletePostResponse.observe(viewLifecycleOwner, {
@@ -53,8 +62,7 @@ class ListPostFragment : BaseFragment<ListPostFragmentBinding>(ListPostFragmentB
                 is Resource.Success -> {
                     dismissLoadingDialog()
                     dismissDeletePostDialog()
-                    findNavController().navigate(R.id.action_global_dashboardFragment)
-                    createInfoSnackBar(getString(string.successfully_deleted), Color.GREEN)
+                    viewModel.deleteCommentsByPost(currentPostId)
                 }
                 is Resource.Error -> {
                     dismissLoadingDialog()
@@ -67,6 +75,25 @@ class ListPostFragment : BaseFragment<ListPostFragmentBinding>(ListPostFragmentB
         })
     }
 
+    private fun observeDeleteCommentByPostResponse() {
+        viewModel.deleteCommentsByPost.observe(viewLifecycleOwner, {
+            when (it) {
+                is Resource.Success -> {
+                    dismissLoadingDialog()
+                    findNavController().navigate(ProfileFragmentDirections.actionGlobalPostFragment())
+                    createInfoSnackBar(getString(string.successfully_deleted), Color.GREEN)
+                }
+                is Resource.Error -> {
+                    dismissLoadingDialog()
+                    it.errorMessage?.let { message -> showErrorDialog(message) }
+                }
+                is Resource.Loading -> {
+                    showLinearLoading()
+                }
+            }
+        })
+    }
+
     private fun initRec() {
         binding.rvListPosts.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -74,10 +101,14 @@ class ListPostFragment : BaseFragment<ListPostFragmentBinding>(ListPostFragmentB
         }
         postAdapter.onDeleteClick = {
             showDeletePostDialog(it)
+            currentPostId = it
         }
         postAdapter.onViewCommentClick = {
             val action = DashboardGraphDirections.actionGlobalBottomSheetComments(it)
             Navigation.findNavController(requireView()).navigate(action)
+        }
+        postAdapter.onCommentClick = {
+            showAddCommentDialog(it)
         }
     }
 }

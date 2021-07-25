@@ -9,7 +9,7 @@ import com.example.you.util.Resource
 
 interface PostRepository {
 
-    suspend fun addPost(imageUri: Uri, postText: String): Resource<Any>
+    suspend fun addPost(imageUri: Uri, postText: String,postType:String): Resource<Any>
     suspend fun getUser(uid: String): Resource<UserModel>
     suspend fun addComment(postId: String, text: String): Resource<Any>
     suspend fun getCommentForPost(postId: String): Resource<List<Comment>>
@@ -17,4 +17,5 @@ interface PostRepository {
     suspend fun getPostLikes(post: Post): Resource<Boolean>
     suspend fun searchUser(query: String): Resource<List<UserModel>>
     suspend fun getLikedByUsers(uids: List<String>): Resource<List<UserModel>>
+
 }

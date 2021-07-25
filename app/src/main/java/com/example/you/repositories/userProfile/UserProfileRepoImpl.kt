@@ -4,6 +4,7 @@ import android.net.Uri
 import com.example.you.models.post.Post
 import com.example.you.models.user.ProfileUpdate
 import com.example.you.models.user.UserModel
+import com.example.you.util.Constants
 import com.example.you.util.Constants.POSTS_COLLECTION_NAME
 import com.example.you.util.Constants.USER_COLLECTION_NAME
 import com.example.you.util.Resource
@@ -20,12 +21,13 @@ class UserProfileRepoImpl @Inject constructor(
     private val storage: FirebaseStorage,
     private val fireStore: FirebaseFirestore,
 ) : UserProfileRepository {
-    private val users = fireStore.collection(USER_COLLECTION_NAME)
-    private val posts = fireStore.collection(POSTS_COLLECTION_NAME)
+    private val usersCollection = fireStore.collection(USER_COLLECTION_NAME)
+    private val postsCollection = fireStore.collection(POSTS_COLLECTION_NAME)
+    private val commentCollection = fireStore.collection(Constants.COMMENTS_COLLECTION_NAME)
 
     override suspend fun getUser(uid: String): Resource<UserModel> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val currentUser = users.document(uid).get().await()
+            val currentUser = usersCollection.document(uid).get().await()
             val currentUserModel = UserModel(
                 currentUser["uid"] as String,
                 currentUser["userName"] as String,
@@ -76,7 +78,7 @@ class UserProfileRepoImpl @Inject constructor(
             if (imageUrl != null) {
                 infoMap["profileImageUrl"] = imageUrl
             }
-            users.document(profileUpdate.uid).update(infoMap.toMap()).await()
+            usersCollection.document(profileUpdate.uid).update(infoMap.toMap()).await()
 
             Resource.Success(Any())
         } catch (e: Exception) {
@@ -89,7 +91,7 @@ class UserProfileRepoImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             return@withContext try {
                 val userPosts =
-                    posts.whereEqualTo("authorId", uid).get().await().toObjects(Post::class.java)
+                    postsCollection.whereEqualTo("authorId", uid).get().await().toObjects(Post::class.java)
                 Resource.Success(userPosts)
             } catch (e: Exception) {
                 Resource.Error(e.toString())
@@ -98,7 +100,7 @@ class UserProfileRepoImpl @Inject constructor(
 
     override suspend fun deletePost(postId: String): Resource<Any> = withContext(Dispatchers.IO) {
         return@withContext try {
-            posts.document(postId).delete().await()
+            postsCollection.document(postId).delete().await()
             Resource.Success(Any())
         } catch (e: Exception) {
             Resource.Error(e.toString())
@@ -108,11 +110,22 @@ class UserProfileRepoImpl @Inject constructor(
     override suspend fun getUserPosts(authorId: String): Resource<List<Post>> =
         withContext(Dispatchers.IO) {
             return@withContext try {
-                val userPosts = posts.whereEqualTo("authorId", authorId).get().await()
+                val userPosts = postsCollection.whereEqualTo("authorId", authorId).get().await()
                     .toObjects(Post::class.java)
                 Resource.Success(userPosts)
             } catch (e: Exception) {
                 Resource.Error(e.toString())
             }
         }
+    override suspend fun deleteCommentByPostId(postId: String): Resource<Any> = withContext(Dispatchers.IO){
+        return@withContext try {
+            val result= commentCollection.whereEqualTo("postId",postId).get().await()
+            result.forEach {
+                it.reference.delete()
+            }
+            Resource.Success(Any())
+        }catch (e:Exception){
+            Resource.Error(e.toString())
+        }
+    }
 }

@@ -51,4 +51,8 @@
     <string name="empty">Empty</string>
     <string name="no_likes_yet">No Likes Yet</string>
     <string name="no_one_in_your_radius">No One In Your Radius</string>
+    <string name="for_all">For All</string>
+    <string name="for_my_radius">For My Radius</string>
+    <string name="publish">Publish</string>
+    <string name="please_choose_post_publish_type">Please Choose Post Publish Type</string>
 </resources>

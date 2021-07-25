@@ -16,6 +16,8 @@ import com.example.you.extensions.createInfoSnackBar
 import com.example.you.extensions.slideUp
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
+import com.example.you.util.Constants.POST_TYPE_FOR_ALL
+import com.example.you.util.Constants.POST_TYPE_FOR_RADIUS
 import com.example.you.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,13 +34,22 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
         setListener()
         observePostResponse()
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
-        slideUp(requireContext(),binding.btnAddPost,binding.ivPostImage,binding.tvAddPicture,binding.tvPostText)
+        slideUp(
+            requireContext(),
+            binding.btnAddPost,
+            binding.ivPostImage,
+            binding.tvAddPicture,
+            binding.tvPostText,
+            binding.chipGroup
+        )
     }
 
     private fun setListener() {
         binding.btnAddPost.setOnClickListener {
             if (postImageView != null) {
                 addPost()
+            } else {
+                createInfoSnackBar(getString(string.please_choose_post_image), Color.RED)
             }
         }
         binding.tvAddPicture.setOnClickListener {
@@ -65,11 +76,30 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
     }
 
     private fun addPost() {
+        var postType = POST_TYPE_FOR_ALL
+        val chipForRadius = binding.chipsForRadius
+        val chipForAll = binding.chipForAll
+        val chipGroup = binding.chipGroup
+
         val postText = binding.tvPostText.text.toString()
         if (postText.isBlank()) {
             createInfoSnackBar(getString(string.please_fill_all_fields), Color.RED)
         } else {
-            viewModel.addPost(postImageView!!, postText)
+            if (chipForAll.isChecked || chipForRadius.isChecked) {
+                when (chipGroup.checkedChipId) {
+                    R.id.chipForAll -> postType = POST_TYPE_FOR_ALL
+                    R.id.chipsForRadius -> postType = POST_TYPE_FOR_RADIUS
+                }
+                chipGroup.setOnCheckedChangeListener { _, checkedId ->
+                    when (checkedId) {
+                        R.id.chipsForRadius -> postType = POST_TYPE_FOR_RADIUS
+                        R.id.chipForAll -> postType = POST_TYPE_FOR_ALL
+                    }
+                }
+                viewModel.addPost(postImageView!!, postText, postType)
+            } else {
+                createInfoSnackBar(getString(string.please_choose_post_publish_type), Color.RED)
+            }
         }
     }
 

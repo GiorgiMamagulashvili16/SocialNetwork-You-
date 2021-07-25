@@ -1,9 +1,7 @@
 package com.example.you.repositories.posts
 
-import android.location.Location
 import android.net.Uri
 import android.util.Log
-import android.util.Log.d
 import com.example.you.models.post.Comment
 import com.example.you.models.post.Post
 import com.example.you.models.user.UserModel
@@ -13,7 +11,6 @@ import com.example.you.util.Constants.USER_COLLECTION_NAME
 import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -30,7 +27,7 @@ class PostRepositoryImp @Inject constructor(
     private val postCollection = fireStore.collection(POSTS_COLLECTION_NAME)
     private val commentCollection = fireStore.collection(COMMENTS_COLLECTION_NAME)
 
-    override suspend fun addPost(imageUri: Uri, postText: String): Resource<Any> =
+    override suspend fun addPost(imageUri: Uri, postText: String, postType: String): Resource<Any> =
         withContext(Dispatchers.IO) {
             try {
                 val uid = auth.currentUser?.uid!!
@@ -42,6 +39,7 @@ class PostRepositoryImp @Inject constructor(
                     authorId = uid,
                     text = postText,
                     postImageUrl = postImage,
+                    postType = postType,
                     date = System.currentTimeMillis()
                 )
                 postCollection.document(postId).set(post).await()
@@ -182,4 +180,6 @@ class PostRepositoryImp @Inject constructor(
             }
 
         }
+
+
 }

@@ -4,13 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.you.models.post.Post
 import com.example.you.models.user.UserModel
 import com.example.you.repositories.userProfile.UserProfileRepoImpl
+import com.example.you.util.Constants
 import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -18,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val repository: UserProfileRepoImpl,
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val fireStore: FirebaseFirestore
 ) : ViewModel() {
     private val _posts by lazy {
         MutableLiveData<Resource<List<Post>>>()
@@ -37,6 +44,17 @@ class ProfileViewModel @Inject constructor(
         MutableLiveData<Resource<Any>>()
     }
     val deletePostResponse: LiveData<Resource<Any>> = _deletePostResponse
+    private val _deleteCommentByPost by lazy {
+        MutableLiveData<Resource<Any>>()
+    }
+    val deleteCommentsByPost: LiveData<Resource<Any>> = _deleteCommentByPost
+
+    fun deleteCommentsByPost(postId: String) = viewModelScope.launch {
+        _deleteCommentByPost.postValue(Resource.Loading())
+        withContext(Dispatchers.IO) {
+            _deleteCommentByPost.postValue(repository.deleteCommentByPostId(postId))
+        }
+    }
 
     fun deletePost(postId: String) = viewModelScope.launch {
         _deletePostResponse.postValue(Resource.Loading())

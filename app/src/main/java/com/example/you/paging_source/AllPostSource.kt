@@ -7,6 +7,8 @@ import com.example.you.models.user.UserModel
 import com.example.you.util.Constants
 import com.example.you.util.Constants.AUTHOR_ID_FIELD
 import com.example.you.util.Constants.POSTS_COLLECTION_NAME
+import com.example.you.util.Constants.POST_TYPE_FIELD
+import com.example.you.util.Constants.POST_TYPE_FOR_RADIUS
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
@@ -23,36 +25,43 @@ class AllPostSource(
     override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, Post> {
         return try {
             val uid = auth.currentUser?.uid!!
+            val result = mutableListOf<Post>()
+
             val currentPage = params.key ?: fireStore.collection(POSTS_COLLECTION_NAME)
-                .whereNotEqualTo(AUTHOR_ID_FIELD, uid)
+                .whereNotEqualTo(POST_TYPE_FIELD, POST_TYPE_FOR_RADIUS)
                 .get()
                 .await()
             val lastDocument = currentPage.documents[currentPage.size() - 1]
 
             val nextPage = fireStore.collection(POSTS_COLLECTION_NAME)
-                .whereNotEqualTo(AUTHOR_ID_FIELD, auth.currentUser?.uid!!)
+                .whereNotEqualTo(POST_TYPE_FIELD, POST_TYPE_FOR_RADIUS)
                 .startAfter(lastDocument)
                 .get()
                 .await()
 
+            currentPage.toObjects(Post::class.java).onEach { post ->
+                val currentUser =
+                    fireStore.collection(Constants.USER_COLLECTION_NAME).document(post.authorId)
+                        .get()
+                        .await()
+                val currentUserModel = UserModel(
+                    currentUser["uid"] as String,
+                    currentUser["userName"] as String,
+                    currentUser["description"] as String,
+                    profileImageUrl = currentUser["profileImageUrl"] as String,
+                )
+                post.apply {
+                    authorUserName = currentUserModel.userName
+                    authorProfileImageUrl = currentUserModel.profileImageUrl
+                    isLiked = uid in post.likedBy
+                }
+                if (post.authorId != uid)
+                    result.add(post)
+            }
+
+
             LoadResult.Page(
-                currentPage.toObjects(Post::class.java).onEach { post ->
-                    val currentUser =
-                        fireStore.collection(Constants.USER_COLLECTION_NAME).document(post.authorId)
-                            .get()
-                            .await()
-                    val currentUserModel = UserModel(
-                        currentUser["uid"] as String,
-                        currentUser["userName"] as String,
-                        currentUser["description"] as String,
-                        profileImageUrl = currentUser["profileImageUrl"] as String,
-                    )
-                    post.apply {
-                        authorUserName = currentUserModel.userName
-                        authorProfileImageUrl = currentUserModel.profileImageUrl
-                        isLiked = auth.currentUser?.uid!! in post.likedBy
-                    }
-                },
+                result,
                 null,
                 nextPage
             )

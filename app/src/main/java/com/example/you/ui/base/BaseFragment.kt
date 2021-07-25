@@ -13,11 +13,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.viewbinding.ViewBinding
-import com.example.you.adapters.posts.PostAdapter
 import com.example.you.databinding.*
 import com.example.you.extensions.createInfoSnackBar
 import com.example.you.extensions.setDialog
-import com.example.you.models.post.Post
+import com.example.you.ui.fragments.bottom_sheets.CommentsViewModel
 import com.example.you.ui.fragments.dashboard.string
 import com.example.you.ui.fragments.my_profile.ProfileViewModel
 import com.example.you.ui.fragments.posts.PostViewModel
@@ -30,13 +29,14 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
     private var _binding: VB? = null
     protected val binding get() = _binding!!
     private var loadingDialog: Dialog? = null
-    private var linearLoadingDialog:Dialog? = null
+    private var linearLoadingDialog: Dialog? = null
     private var deletePostDialog: Dialog? = null
     private var errorDialog: Dialog? = null
     private var addCommentDialog: Dialog? = null
 
     private val viewModel: ProfileViewModel by viewModels()
     private val postViewModel: PostViewModel by viewModels()
+    private val commentsViewModel: CommentsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -143,13 +143,14 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
         errorDialog!!.show()
     }
 
-    protected fun showLinearLoading(){
+    protected fun showLinearLoading() {
         linearLoadingDialog = Dialog(requireContext())
         val dialogBinding = DialogLinearLoadingBinding.inflate(layoutInflater)
         linearLoadingDialog!!.setDialog(dialogBinding)
         linearLoadingDialog!!.show()
     }
-    protected fun dismissLinearLoadingDialog(){
+
+    protected fun dismissLinearLoadingDialog() {
         linearLoadingDialog!!.dismiss()
     }
 
@@ -171,6 +172,7 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
     private fun dismissAddCommentDialog() {
         addCommentDialog!!.dismiss()
     }
+
     protected fun observeAddCommentResponse() {
         postViewModel.addComment.observe(viewLifecycleOwner, {
             when (it) {
