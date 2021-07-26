@@ -9,6 +9,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.example.you.models.post.Post
 import com.example.you.models.user.UserModel
+import com.example.you.repositories.posts.PostRepositoryImp
 import com.example.you.repositories.userProfile.UserProfileRepoImpl
 import com.example.you.util.Constants
 import com.example.you.util.Resource
@@ -25,7 +26,8 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val repository: UserProfileRepoImpl,
     private val auth: FirebaseAuth,
-    private val fireStore: FirebaseFirestore
+    private val fireStore: FirebaseFirestore,
+    private val postRepository: PostRepositoryImp
 ) : ViewModel() {
     private val _posts by lazy {
         MutableLiveData<Resource<List<Post>>>()
@@ -40,10 +42,7 @@ class ProfileViewModel @Inject constructor(
         MutableLiveData<Int>()
     }
     val postListSize: LiveData<Int> = _postListSize
-    private val _deletePostResponse by lazy {
-        MutableLiveData<Resource<Any>>()
-    }
-    val deletePostResponse: LiveData<Resource<Any>> = _deletePostResponse
+
     private val _deleteCommentByPost by lazy {
         MutableLiveData<Resource<Any>>()
     }
@@ -56,10 +55,14 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
+    private val _deletePostResponse by lazy {
+        MutableLiveData<Resource<Any>>()
+    }
+    val deletePostResponse: LiveData<Resource<Any>> = _deletePostResponse
     fun deletePost(postId: String) = viewModelScope.launch {
         _deletePostResponse.postValue(Resource.Loading())
         withContext(Dispatchers.IO) {
-            _deletePostResponse.postValue(repository.deletePost(postId))
+            _deletePostResponse.postValue(postRepository.deletePost(postId))
         }
     }
 

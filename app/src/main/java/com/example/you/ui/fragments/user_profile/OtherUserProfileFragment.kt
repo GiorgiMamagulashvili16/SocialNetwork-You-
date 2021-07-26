@@ -2,8 +2,8 @@ package com.example.you.ui.fragments.user_profile
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -18,6 +18,7 @@ import com.example.you.ui.base.BaseFragment
 import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class OtherUserProfileFragment :
@@ -26,15 +27,33 @@ class OtherUserProfileFragment :
     private val viewModel: OtherUserProfileViewModel by viewModels()
     private val postAdapter: OtherUserPostAdapter by lazy { OtherUserPostAdapter() }
     private var currentPostIndex: Int? = null
-    val args:OtherUserProfileFragmentArgs by navArgs()
+    val args: OtherUserProfileFragmentArgs by navArgs()
 
     override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
         init()
     }
 
     private fun init() {
-        viewModel.getUserPosts(args.uid)
-        viewModel.getUser(args.uid)
+        lifecycleScope.launch {
+            viewModel.getUserPosts(args.uid)
+            viewModel.getUser(args.uid)
+        }
+        initRec()
+        observeUser()
+        observeUserPosts()
+        setListeners()
+        observePostLikes()
+    }
+
+    private fun setListeners() {
+        binding.btnBack.setOnClickListener {
+            findNavController().navigate(R.id.action_otherUserProfileFragment_to_postFragment)
+        }
+        binding.btnSendMessage.setOnClickListener {
+            findNavController().navigate(
+                OtherUserProfileFragmentDirections.actionOtherUserProfileFragmentToChatFragment(args.uid)
+            )
+        }
         slideUp(
             requireContext(),
             binding.btnBack,
@@ -45,13 +64,6 @@ class OtherUserProfileFragment :
             binding.tvPostQuantity
         )
         binding.ivCoverImage.setRandomCover()
-        initRec()
-        observeUser()
-        observeUserPosts()
-        binding.btnBack.setOnClickListener {
-            findNavController().navigate(R.id.action_otherUserProfileFragment_to_postFragment)
-        }
-        observePostLikes()
     }
 
     private fun observeUserPosts() {
@@ -109,7 +121,7 @@ class OtherUserProfileFragment :
 
                 }
                 is Resource.Error -> {
-
+                    isLiked.errorMessage?.let { showErrorDialog(it) }
                 }
                 is Resource.Loading -> {
                     currentPostIndex?.let { index ->
@@ -135,7 +147,7 @@ class OtherUserProfileFragment :
             layoutManager = LinearLayoutManager(requireContext())
             adapter = postAdapter
         }
-       adapterListeners()
+        adapterListeners()
     }
 
     private fun adapterListeners() {

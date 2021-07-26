@@ -46,6 +46,8 @@ class RegistrationFragment :
     }
 
     private fun init() {
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireContext())
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
         setListeners()
         locationPermissionsRequest()
@@ -181,8 +183,6 @@ class RegistrationFragment :
     }
 
     private fun getLocation() {
-        fusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(requireContext())
         locationRequest = LocationRequest.create().apply {
             interval = TimeUnit.SECONDS.toMillis(60)
             fastestInterval = TimeUnit.SECONDS.toMillis(30)

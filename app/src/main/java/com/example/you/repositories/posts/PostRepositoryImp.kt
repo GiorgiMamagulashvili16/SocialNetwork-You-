@@ -181,5 +181,12 @@ class PostRepositoryImp @Inject constructor(
 
         }
 
-
+    override suspend fun deletePost(postId: String): Resource<Any> = withContext(Dispatchers.IO) {
+        return@withContext try {
+            postCollection.document(postId).delete().await()
+            Resource.Success(Any())
+        } catch (e: Exception) {
+            Resource.Error(e.toString())
+        }
+    }
 }

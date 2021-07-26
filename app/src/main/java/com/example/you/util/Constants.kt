@@ -11,8 +11,10 @@ object Constants {
     const val USER_COLLECTION_NAME = "users"
     const val POSTS_COLLECTION_NAME = "posts"
     const val COMMENTS_COLLECTION_NAME = "comments"
+    const val CHAT_COLLECTION_NAME = "chat"
     const val AUTHOR_ID_FIELD=  "authorId"
     const val POST_TYPE_FIELD = "postType"
+    const val TIME_FIELD = "time"
 
     const val DRAWER_LOG_OUT_INDEX = 5
 

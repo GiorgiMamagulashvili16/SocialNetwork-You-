@@ -13,7 +13,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.you.adapters.PostPagingAdapter
+import com.example.you.adapters.posts.PostPagingAdapter
 import com.example.you.databinding.RadiusFragmentBinding
 import com.example.you.ui.base.BaseFragment
 import com.example.you.util.Resource

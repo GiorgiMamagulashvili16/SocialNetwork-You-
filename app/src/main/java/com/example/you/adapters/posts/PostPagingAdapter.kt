@@ -1,4 +1,4 @@
-package com.example.you.adapters
+package com.example.you.adapters.posts
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,12 +13,6 @@ import com.example.you.ui.fragments.dashboard.drawable
 import com.example.you.ui.fragments.dashboard.string
 import com.google.firebase.auth.FirebaseAuth
 
-typealias onProfileClick = (userId: String) -> Unit
-typealias onCommentClick = (postId: String) -> Unit
-typealias onViewCommentClick = (postId: String) -> Unit
-typealias onLikeClick = (post: Post, index: Int) -> Unit
-typealias onDeleteClick = (postId: String) -> Unit
-typealias onLikedByClick = (users: List<String>) -> Unit
 
 class PostPagingAdapter : PagingDataAdapter<Post, PostPagingAdapter.PostViewHolder>(Differ) {
     lateinit var onProfileClick: onProfileClick

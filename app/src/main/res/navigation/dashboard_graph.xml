@@ -69,6 +69,11 @@
         <action
             android:id="@+id/action_otherUserProfileFragment_to_bottomSheetLikes"
             app:destination="@id/bottomSheetLikes" />
+        <action
+            android:id="@+id/action_otherUserProfileFragment_to_chatFragment"
+            app:destination="@id/chatFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
     <dialog
         android:id="@+id/bottomSheetComments"
@@ -113,4 +118,16 @@
             android:name="uids"
             app:argType="string[]" />
     </dialog>
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.you.ui.fragments.chat.ChatFragment"
+        android:label="chat_fragment"
+        tools:layout="@layout/chat_fragment" >
+        <action
+            android:id="@+id/action_chatFragment_to_otherUserProfileFragment"
+            app:destination="@id/otherUserProfileFragment" />
+        <argument
+            android:name="receiverId"
+            app:argType="string" />
+    </fragment>
 </navigation>

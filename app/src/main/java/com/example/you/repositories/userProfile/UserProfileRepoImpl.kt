@@ -98,14 +98,7 @@ class UserProfileRepoImpl @Inject constructor(
             }
         }
 
-    override suspend fun deletePost(postId: String): Resource<Any> = withContext(Dispatchers.IO) {
-        return@withContext try {
-            postsCollection.document(postId).delete().await()
-            Resource.Success(Any())
-        } catch (e: Exception) {
-            Resource.Error(e.toString())
-        }
-    }
+
 
     override suspend fun getUserPosts(authorId: String): Resource<List<Post>> =
         withContext(Dispatchers.IO) {

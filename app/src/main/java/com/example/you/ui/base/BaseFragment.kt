@@ -34,9 +34,8 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
     private var errorDialog: Dialog? = null
     private var addCommentDialog: Dialog? = null
 
-    private val viewModel: ProfileViewModel by viewModels()
     private val postViewModel: PostViewModel by viewModels()
-    private val commentsViewModel: CommentsViewModel by viewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -117,7 +116,7 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
         deletePostDialog!!.setDialog(binding)
         binding.apply {
             btnYes.setOnClickListener {
-                viewModel.deletePost(postId)
+                postViewModel.deletePost(postId)
             }
             btnNo.setOnClickListener {
                 deletePostDialog!!.dismiss()
@@ -157,7 +156,6 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
     protected fun showAddCommentDialog(postId: String) {
         addCommentDialog = Dialog(requireContext())
         val dialogBinding = DialogAddCommentBinding.inflate(layoutInflater)
-
         addCommentDialog!!.setDialog(dialogBinding)
         dialogBinding.btnAddComment.setOnClickListener {
             if (dialogBinding.etComment.text.toString().isNotEmpty()) {
