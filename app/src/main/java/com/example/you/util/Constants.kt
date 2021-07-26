@@ -26,4 +26,15 @@ object Constants {
 
     const val POST_TYPE_FOR_RADIUS = "for_radius"
     const val POST_TYPE_FOR_ALL = "for_all"
+
+    const val CHANNEL_ID = "chat_channel"
+    const val CHANNEL_DESCRIPTION ="chat_channel_description"
+    const val CHANNEL_NAME = "chat_channel"
+    const val NOTIFICATION_TITLE = "title"
+    const val NOTIFICATION_MESSAGE = "message"
+    const val NOTIFICATION_SENDER_ID = "senderId"
+    const val TOKEN = "token"
+
+    const val SERVER_KEY = "AAAAqtApo-w:APA91bEK0p6-eHm_-hidQ178S8cJBhPGcDR8SYIm61_e1KgZrjLj7m5AgEQzO331hIKYV_GIgNDo1A-GGjY8__woPfOIJsW9WwBUWFVJ11_HnM7j7Vpyj6P-ypDTW-2ykGwMpp_9Cymu"
+    const val CONTENT_TYPE = "application/json"
 }

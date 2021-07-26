@@ -1,11 +1,15 @@
 package com.example.you.di
 
+import com.example.you.network.NotificationService
 import com.example.you.repositories.auth.AuthRepository
 import com.example.you.repositories.auth.AuthRepositoryImpl
+import com.example.you.repositories.chat.ChatRepository
+import com.example.you.repositories.chat.ChatRepositoryImpl
 import com.example.you.repositories.posts.PostRepository
 import com.example.you.repositories.posts.PostRepositoryImp
 import com.example.you.repositories.userProfile.UserProfileRepoImpl
 import com.example.you.repositories.userProfile.UserProfileRepository
+import com.example.you.service.PushNotificationService
 import com.example.you.util.ResponseHandler
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,12 +18,15 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    private const val NOTIFICATION_BASE_URL = "https://fcm.googleapis.com"
 
     @Provides
     @Singleton
@@ -48,4 +55,22 @@ object AppModule {
     @Provides
     @Singleton
     fun providesResponseHandler() = ResponseHandler()
+
+    @Provides
+    @Singleton
+    fun providesNotificationApi(): NotificationService = Retrofit.Builder()
+        .baseUrl(NOTIFICATION_BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(NotificationService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideChatRepo(
+        fireStore: FirebaseFirestore,
+        auth: FirebaseAuth,
+        postRepositoryImp: PostRepositoryImp,
+        notificationService: NotificationService
+    ): ChatRepository =
+        ChatRepositoryImpl(fireStore, auth, postRepositoryImp, notificationService)
 }

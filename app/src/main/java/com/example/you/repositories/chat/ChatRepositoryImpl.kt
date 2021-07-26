@@ -1,6 +1,10 @@
 package com.example.you.repositories.chat
 
+import android.util.Log
 import com.example.you.models.message.Message
+import com.example.you.models.notification.NotificationData
+import com.example.you.models.notification.PushNotification
+import com.example.you.network.NotificationService
 import com.example.you.repositories.posts.PostRepositoryImp
 import com.example.you.util.Constants.CHAT_COLLECTION_NAME
 import com.example.you.util.Constants.TIME_FIELD
@@ -17,19 +21,29 @@ import javax.inject.Inject
 class ChatRepositoryImpl @Inject constructor(
     private val fireStore: FirebaseFirestore,
     private val auth: FirebaseAuth,
-    private val postRepository: PostRepositoryImp
+    private val postRepository: PostRepositoryImp,
+    private val notificationService: NotificationService
 ) : ChatRepository {
     private val chatCollection = fireStore.collection(CHAT_COLLECTION_NAME)
+    private var topic = ""
+
     override suspend fun sendMessage(receiverId: String, text: String): Resource<Any> =
         withContext(Dispatchers.IO) {
             return@withContext try {
+                val currentUser = auth.currentUser?.uid!!
+                val userName =postRepository.getUser(currentUser).data!!.userName
+
                 val message = Message(
                     messageId = UUID.randomUUID().toString(),
-                    senderId = auth.currentUser?.uid!!,
+                    senderId = currentUser,
                     receiverId = receiverId,
                     message = text,
                     time = System.currentTimeMillis()
                 )
+                topic = "/topics/$receiverId"
+                PushNotification(NotificationData(currentUser,userName, text), topic).also {
+                    sendNotification(it)
+                }
                 chatCollection.document(message.messageId).set(message).await()
                 Resource.Success(Any())
             } catch (e: Exception) {
@@ -60,4 +74,18 @@ class ChatRepositoryImpl @Inject constructor(
                 Resource.Error(e.toString())
             }
         }
+
+    override suspend fun sendNotification(notification: PushNotification): Unit = withContext(Dispatchers.IO){
+        try {
+            val response = notificationService.sendNotification(notification)
+            if (response.isSuccessful) {
+                val body = response.body()!!
+                Log.d("NOTREPSONSE", "$body")
+            } else {
+                Log.d("NOTREPSONSE", "${response.errorBody()}")
+            }
+        } catch (e: Exception) {
+            Log.d("NOTREPSONSEC", "$e")
+        }
+    }
 }

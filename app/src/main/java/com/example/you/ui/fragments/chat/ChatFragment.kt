@@ -32,6 +32,16 @@ class ChatFragment : BaseFragment<ChatFragmentBinding>(ChatFragmentBinding::infl
         initRec()
         observeSendResponse()
         observeReadMessage()
+
+        val step = arguments?.let {
+            val safeArgs = ChatFragmentArgs.fromBundle(it)
+            safeArgs.receiverId
+        }
+        lifecycleScope.launch {
+            if (step != null) {
+                viewModel.readMessages(step)
+            }
+        }
         lifecycleScope.launch {
             viewModel.readMessages(args.receiverId)
         }
@@ -50,6 +60,7 @@ class ChatFragment : BaseFragment<ChatFragmentBinding>(ChatFragmentBinding::infl
                     d("SdSAD","${it.data}")
                     binding.progressBar.hide()
                     chatAdapter.differ.submitList(it.data)
+                    binding.rvChat.scrollToPosition(chatAdapter.differ.currentList.size -1 )
                 }
                 is Resource.Error -> {
                     binding.progressBar.hide()
