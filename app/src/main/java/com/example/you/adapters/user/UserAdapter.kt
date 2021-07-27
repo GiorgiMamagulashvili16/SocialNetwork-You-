@@ -1,10 +1,12 @@
 package com.example.you.adapters.user
 
+import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.you.databinding.RowUserItemBinding
 import com.example.you.extensions.getShapeableImage
 import com.example.you.models.user.UserModel
@@ -21,6 +23,7 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
         fun onBind() {
             val user = differ.currentList[absoluteAdapterPosition]
             binding.apply {
+                d("sdsadd","$user")
                 ivProfileImage.getShapeableImage(user.profileImageUrl)
                 tvUserName.text = user.userName
                 root.setOnClickListener {

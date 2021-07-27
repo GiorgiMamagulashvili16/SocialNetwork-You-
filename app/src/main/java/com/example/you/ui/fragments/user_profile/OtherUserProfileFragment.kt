@@ -15,6 +15,7 @@ import com.example.you.extensions.getShapeableImage
 import com.example.you.extensions.setRandomCover
 import com.example.you.extensions.slideUp
 import com.example.you.ui.base.BaseFragment
+import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -71,6 +72,7 @@ class OtherUserProfileFragment :
             when (posts) {
                 is Resource.Success -> {
                     postAdapter.differ.submitList(posts.data)
+                    setUserPostListSize(posts.data!!.size)
                 }
                 is Resource.Error -> {
                     posts.errorMessage?.let { message -> showErrorDialog(message) }
@@ -139,6 +141,20 @@ class OtherUserProfileFragment :
             tvDescription.text = desc
             tvUserName.text = username
             ivProfileImage.getShapeableImage(image)
+        }
+    }
+
+    private fun setUserPostListSize(size: Int) {
+        binding.tvPostQuantity.text = when {
+            size <= 0 -> {
+                getString(string.no_post_yet)
+            }
+            size == 1 -> {
+                getString(string.post_list_size, 1, "post")
+            }
+            else -> {
+                getString(string.post_list_size, size, "posts")
+            }
         }
     }
 

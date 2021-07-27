@@ -149,9 +149,9 @@ class PostRepositoryImp @Inject constructor(
                 ).get().await()
                 for (i in users.documents) {
                     val user = UserModel(
-                        i["uid"] as String,
-                        i["userName"] as String,
-                        i["profileImageUrl"] as String,
+                        uid = i["uid"] as String,
+                        userName = i["userName"] as String,
+                        profileImageUrl = i["profileImageUrl"] as String,
                     )
                     userList.add(user)
                 }

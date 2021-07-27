@@ -6,7 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.you.models.message.Message
 import com.example.you.repositories.chat.ChatRepositoryImpl
+import com.example.you.repositories.posts.PostRepositoryImp
+import com.example.you.util.Constants.CHAT_COLLECTION_NAME
+import com.example.you.util.Constants.TIME_FIELD
 import com.example.you.util.Resource
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ktx.toObject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,8 +22,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    private val chatRepository: ChatRepositoryImpl
+    private val chatRepository: ChatRepositoryImpl,
+    private val fireStore: FirebaseFirestore,
+    private val auth: FirebaseAuth,
+    private val postRepository: PostRepositoryImp
 ) : ViewModel() {
+
+    private val chatColl = fireStore.collection(CHAT_COLLECTION_NAME)
     private val _sendResponse by lazy {
         MutableLiveData<Resource<Any>>()
     }

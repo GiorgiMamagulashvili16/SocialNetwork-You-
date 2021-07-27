@@ -41,7 +41,9 @@
         tools:layout="@layout/search_fragment" >
         <action
             android:id="@+id/action_searchFragment_to_otherUserProfileFragment"
-            app:destination="@id/otherUserProfileFragment" />
+            app:destination="@id/otherUserProfileFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
     </fragment>
     <fragment
         android:id="@+id/addPostFragment2"
@@ -50,7 +52,9 @@
         tools:layout="@layout/add_post_fragment" >
         <action
             android:id="@+id/action_addPostFragment2_to_profileFragment"
-            app:destination="@id/profileFragment" />
+            app:destination="@id/profileFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
     </fragment>
     <fragment
         android:id="@+id/otherUserProfileFragment"

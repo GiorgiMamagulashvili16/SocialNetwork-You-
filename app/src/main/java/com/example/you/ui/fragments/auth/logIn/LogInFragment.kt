@@ -4,7 +4,6 @@ import android.Manifest
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
@@ -30,12 +29,8 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
     }
 
     private fun init() {
-        binding.btnSignIn.setOnClickListener {
-            logIn()
-        }
-        binding.tvRegister.setOnClickListener {
-            locationPermissionsRequest()
-        }
+        locationPermissionsRequest()
+        setListeners()
         observe()
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
         slideUp(
@@ -48,10 +43,21 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
             binding.btnSignIn
         )
     }
+
+    private fun setListeners() {
+        binding.btnSignIn.setOnClickListener {
+            logIn()
+        }
+        binding.tvRegister.setOnClickListener {
+            locationPermissionsRequest()
+            findNavController().navigate(R.id.action_logInFragment_to_registrationFragment)
+        }
+    }
+
     private fun locationPermissionsRequest() {
         when {
             hasFineLocationPermission() && hasCoarseLocationPermission() -> {
-                findNavController().navigate(R.id.action_logInFragment_to_registrationFragment)
+
             }
             ActivityCompat.shouldShowRequestPermissionRationale(
                 requireActivity(),

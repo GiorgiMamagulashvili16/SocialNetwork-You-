@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.you.adapters.chat.ChatAdapter
@@ -13,16 +14,27 @@ import com.example.you.databinding.ChatFragmentBinding
 import com.example.you.extensions.createInfoSnackBar
 import com.example.you.extensions.hide
 import com.example.you.extensions.show
+import com.example.you.models.message.Message
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
+import com.example.you.util.Constants
 import com.example.you.util.Resource
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ktx.toObject
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 @AndroidEntryPoint
 class ChatFragment : BaseFragment<ChatFragmentBinding>(ChatFragmentBinding::inflate) {
     private val viewModel: ChatViewModel by viewModels()
     private val chatAdapter: ChatAdapter by lazy { ChatAdapter() }
     private val args: ChatFragmentArgs by navArgs()
+
+    private val chatColl = FirebaseFirestore.getInstance().collection("chat")
     override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
         init()
     }
@@ -33,13 +45,13 @@ class ChatFragment : BaseFragment<ChatFragmentBinding>(ChatFragmentBinding::infl
         observeSendResponse()
         observeReadMessage()
 
-        val step = arguments?.let {
+        val arg = arguments?.let {
             val safeArgs = ChatFragmentArgs.fromBundle(it)
             safeArgs.receiverId
         }
         lifecycleScope.launch {
-            if (step != null) {
-                viewModel.readMessages(step)
+            if (arg != null) {
+                viewModel.readMessages(arg)
             }
         }
         lifecycleScope.launch {

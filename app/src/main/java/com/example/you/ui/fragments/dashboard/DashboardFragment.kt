@@ -30,7 +30,6 @@ typealias string = R.string
 @AndroidEntryPoint
 class DashboardFragment :
     BaseFragment<DashboardFragmentBinding>(DashboardFragmentBinding::inflate) {
-    private val auth = FirebaseAuth.getInstance()
     private val viewModel: DashboardViewModel by viewModels()
     private val drawerAdapter: DrawerAdapter by lazy { DrawerAdapter() }
 
@@ -80,6 +79,10 @@ class DashboardFragment :
                 binding.root.openDrawer(GravityCompat.START)
             }
             ivToolbarProfile.setOnClickListener {
+                val action = DashboardGraphDirections.actionGlobalProfileFragment()
+                navController.navigate(action)
+            }
+            tvToolbarUserName.setOnClickListener {
                 val action = DashboardGraphDirections.actionGlobalProfileFragment()
                 navController.navigate(action)
             }
