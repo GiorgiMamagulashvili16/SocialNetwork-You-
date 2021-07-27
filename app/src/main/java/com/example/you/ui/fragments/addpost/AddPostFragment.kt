@@ -1,10 +1,12 @@
 package com.example.you.ui.fragments.addpost
 
+import android.Manifest
 import android.graphics.Color
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.canhub.cropper.CropImageContract
@@ -19,6 +21,7 @@ import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Constants.POST_TYPE_FOR_ALL
 import com.example.you.util.Constants.POST_TYPE_FOR_RADIUS
 import com.example.you.util.Resource
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,7 +56,7 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
             }
         }
         binding.tvAddPicture.setOnClickListener {
-            openMedia()
+           mediaPermissionRequest()
         }
     }
 
@@ -73,6 +76,40 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
                 }
             }
         })
+    }
+    private fun mediaPermissionRequest() {
+        when {
+            hasCameraPermission() && hasReadExtStoragePermission() && hasWriteExtStoragePermission() -> {
+                openMedia()
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.CAMERA
+            ) -> {
+                Snackbar.make(
+                    binding.root,
+                    getString(string.app_needs_this_permission),
+                    Snackbar.LENGTH_INDEFINITE
+                ).apply {
+                    setAction(getString(string.ok)) {
+                        requestMediaPermissions(permissionsLauncher)
+                    }
+                }.show()
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) -> Snackbar.make(
+                binding.root,
+                getString(string.app_needs_this_permission),
+                Snackbar.LENGTH_INDEFINITE
+            ).apply {
+                setAction(getString(string.ok)) {
+                    requestMediaPermissions(permissionsLauncher)
+                }
+            }.show()
+            else -> requestMediaPermissions(permissionsLauncher)
+        }
     }
 
     private fun addPost() {

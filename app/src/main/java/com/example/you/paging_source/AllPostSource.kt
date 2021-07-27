@@ -1,5 +1,6 @@
 package com.example.you.paging_source
 
+import android.util.Log.d
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.you.models.post.Post
@@ -11,6 +12,7 @@ import com.example.you.util.Constants.POST_TYPE_FIELD
 import com.example.you.util.Constants.POST_TYPE_FOR_RADIUS
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
 
@@ -19,7 +21,7 @@ class AllPostSource(
     private val auth: FirebaseAuth
 ) : PagingSource<QuerySnapshot, Post>() {
     override fun getRefreshKey(state: PagingState<QuerySnapshot, Post>): QuerySnapshot? {
-        TODO("Not yet implemented")
+       return null
     }
 
     override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, Post> {
@@ -66,7 +68,9 @@ class AllPostSource(
                 nextPage
             )
         } catch (e: Exception) {
+            d("POSTERROR","$e")
             LoadResult.Error(e)
+
         }
     }
 }

@@ -9,7 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.you.adapters.UserAdapter
+import com.example.you.adapters.user.UserAdapter
 import com.example.you.databinding.SearchFragmentBinding
 import com.example.you.ui.base.BaseFragment
 import com.example.you.util.Resource

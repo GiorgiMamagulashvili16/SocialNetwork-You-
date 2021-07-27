@@ -84,8 +84,8 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
             else -> requestLocationPermissions(permissionsLauncher)
         }
     }
-    private val permissionsLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { }
+
+
     override fun onStart() {
         super.onStart()
         val user = Firebase.auth.currentUser

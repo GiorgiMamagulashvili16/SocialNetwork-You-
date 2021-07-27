@@ -1,7 +1,6 @@
 package com.example.you.ui.fragments.bottom_sheets
 
 import android.os.Bundle
-import android.util.Log
 import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +9,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.you.adapters.UserAdapter
-import com.example.you.databinding.BottomSheetCommentsBinding
+import com.example.you.adapters.user.UserAdapter
 import com.example.you.databinding.BottomSheetLikesBinding
 import com.example.you.util.Resource
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -23,7 +21,7 @@ class BottomSheetLikes : BottomSheetDialogFragment() {
     private var _binding: BottomSheetLikesBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: CommentsViewModel by viewModels()
+   private val viewModel:CommentsViewModel by viewModels()
     val args: BottomSheetLikesArgs by navArgs()
     private val userAdapter: UserAdapter by lazy { UserAdapter() }
     override fun onCreateView(
@@ -46,15 +44,15 @@ class BottomSheetLikes : BottomSheetDialogFragment() {
         viewModel.likedByResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    d("RECREC","${it.data}")
-                    if (it.data!!.isEmpty()){
+                    d("RECREC", "${it.data}")
+                    if (it.data!!.isEmpty()) {
                         binding.tvNoLikes.isVisible = true
-                    }else{
+                    } else {
                         userAdapter.differ.submitList(it.data)
                     }
                 }
                 is Resource.Error -> {
-                    d("RECREC","${it.errorMessage}")
+                    d("RECREC", "${it.errorMessage}")
                 }
                 is Resource.Loading -> {
 
@@ -62,7 +60,8 @@ class BottomSheetLikes : BottomSheetDialogFragment() {
             }
         })
     }
-    private fun initRec(){
+
+    private fun initRec() {
         binding.rvLikes.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = userAdapter

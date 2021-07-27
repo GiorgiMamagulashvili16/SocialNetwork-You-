@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.you.DashboardGraphDirections
 import com.example.you.R
-import com.example.you.adapters.DrawerAdapter
+import com.example.you.adapters.drawer.DrawerAdapter
 import com.example.you.databinding.DashboardFragmentBinding
 import com.example.you.extensions.getShapeableImage
 import com.example.you.models.drawer.DrawerItem

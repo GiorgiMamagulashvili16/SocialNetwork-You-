@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.you.adapters.posts.PostPagingAdapter
 import com.example.you.databinding.RadiusFragmentBinding
 import com.example.you.ui.base.BaseFragment
+import com.example.you.ui.fragments.posts.PostFragmentDirections
 import com.example.you.util.Resource
 import com.google.android.gms.location.*
 import com.google.firebase.auth.FirebaseAuth
@@ -29,6 +30,7 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
+
     private val postAdapter: PostPagingAdapter by lazy { PostPagingAdapter() }
     private val viewModel: RadiusViewModel by viewModels()
     private var currentPostIndex: Int? = null
@@ -158,6 +160,13 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
             currentPostIndex = index
             post.isLiked = !post.isLiked
             viewModel.getPostLikes(post)
+        }
+        postAdapter.onLikedByClick = {
+            findNavController().navigate(
+                RadiusFragmentDirections.actionRadiusFragmentToBottomSheetLikes(
+                    it.toTypedArray()
+                )
+            )
         }
     }
 }

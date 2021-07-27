@@ -15,7 +15,6 @@ import com.example.you.util.Constants.CHANNEL_DESCRIPTION
 import com.example.you.util.Constants.CHANNEL_ID
 import com.example.you.util.Constants.CHANNEL_NAME
 import com.example.you.util.Constants.NOTIFICATION_MESSAGE
-import com.example.you.util.Constants.NOTIFICATION_SENDER_ID
 import com.example.you.util.Constants.NOTIFICATION_TITLE
 import com.example.you.util.Constants.TOKEN
 import com.google.firebase.messaging.FirebaseMessagingService

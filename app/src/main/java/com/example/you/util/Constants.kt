@@ -32,8 +32,9 @@ object Constants {
     const val CHANNEL_NAME = "chat_channel"
     const val NOTIFICATION_TITLE = "title"
     const val NOTIFICATION_MESSAGE = "message"
-    const val NOTIFICATION_SENDER_ID = "senderId"
+    const val NOTIFICATION_RECEIVER_ID_KEY = "senderId"
     const val TOKEN = "token"
+    const val SHARED_PREF_NAME ="user_preference"
 
     const val SERVER_KEY = "AAAAqtApo-w:APA91bEK0p6-eHm_-hidQ178S8cJBhPGcDR8SYIm61_e1KgZrjLj7m5AgEQzO331hIKYV_GIgNDo1A-GGjY8__woPfOIJsW9WwBUWFVJ11_HnM7j7Vpyj6P-ypDTW-2ykGwMpp_9Cymu"
     const val CONTENT_TYPE = "application/json"

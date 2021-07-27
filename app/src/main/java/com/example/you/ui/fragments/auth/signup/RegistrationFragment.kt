@@ -88,8 +88,7 @@ class RegistrationFragment :
         })
     }
 
-    private val permissionsLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { }
+
 
     private fun mediaPermissionRequest() {
         when {

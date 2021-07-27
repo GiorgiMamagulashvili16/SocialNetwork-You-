@@ -165,8 +165,8 @@ class PostRepositoryImp @Inject constructor(
         withContext(Dispatchers.IO) {
             return@withContext try {
                 val userList = mutableListOf<UserModel>()
-                val user = userCollection.whereIn("uid", uids).get().await()
-                user.documents.forEach {
+                val users = userCollection.whereIn("uid", uids).get().await()
+                users.documents.forEach {
                     val userr = UserModel(
                         uid = it["uid"] as String,
                         userName = it["userName"] as String,

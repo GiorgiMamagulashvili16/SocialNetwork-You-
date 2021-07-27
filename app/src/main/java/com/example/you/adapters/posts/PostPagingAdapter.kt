@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 
 
 class PostPagingAdapter : PagingDataAdapter<Post, PostPagingAdapter.PostViewHolder>(Differ) {
+
     lateinit var onProfileClick: onProfileClick
     lateinit var onCommentClick: onCommentClick
     lateinit var onViewCommentClick: onViewCommentClick
@@ -64,11 +65,15 @@ class PostPagingAdapter : PagingDataAdapter<Post, PostPagingAdapter.PostViewHold
                     if (!post.likeLoading) onLikeClick.invoke(post, absoluteAdapterPosition)
                 }
                 btnLike.isEnabled = !post.likeLoading
+
                 btnDeletePost.setOnClickListener {
                     onDeleteClick.invoke(post.postId)
                 }
                 tvLikedBy.setOnClickListener {
                     onLikedByClick.invoke(post.likedBy)
+                }
+                tvUserName.setOnClickListener {
+                    onProfileClick.invoke(post.authorId)
                 }
             }
         }
