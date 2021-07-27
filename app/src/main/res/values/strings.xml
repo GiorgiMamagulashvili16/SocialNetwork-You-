@@ -29,5 +29,18 @@
     <string name="please_choose_post_image">Please Choose Post Image</string>
     <string name="loading">Loading…</string>
     <string name="please_choose_image">Please choose image</string>
+    <string name="_14_3km">14.3km</string>
+    <string name="visibility">visibility</string>
+    <string name="thunder">Thunder</string>
+    <string name="_11">11</string>
+    <string name="recovered">Recovered</string>
+    <string name="weather">Weather</string>
+    <string name="deaths">Deaths</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="statistics_of_corona">Statistics of corona</string>
+    <string name="humidity">humidity</string>
+    <string name="_14_3km">14.3km</string>
+    <string name="wind">wind</string>
+    <string name="today">Today</string>
 
 </resources>

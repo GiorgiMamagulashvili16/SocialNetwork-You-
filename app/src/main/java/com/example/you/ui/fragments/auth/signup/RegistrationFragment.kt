@@ -59,6 +59,9 @@ class RegistrationFragment :
         binding.btnAddImage.setOnClickListener {
             mediaPermissionRequest()
         }
+        binding.toSignIN.setOnClickListener{
+            findNavController().navigate(R.id.action_registrationFragment_to_logInFragment)
+        }
     }
 
     private fun observe() {

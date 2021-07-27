@@ -29,4 +29,8 @@
         android:name="com.example.you.ui.fragments.addpost.AddPostFragment"
         android:label="add_post_fragment"
         tools:layout="@layout/add_post_fragment" />
+    <fragment
+        android:id="@+id/newsFragment"
+        android:name="com.example.you.ui.fragments.news.NewsFragment"
+        android:label="NewsFragment" />
 </navigation>
