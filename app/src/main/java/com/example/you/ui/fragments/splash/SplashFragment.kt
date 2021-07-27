@@ -1,32 +1,45 @@
 package com.example.you.ui.fragments.splash
 
-import androidx.lifecycle.ViewModelProvider
-import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.animation.Animator
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.example.you.R
+import com.example.you.databinding.SplashFragmentBinding
+import com.example.you.ui.base.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-class SplashFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = SplashFragment()
+@AndroidEntryPoint
+class SplashFragment : BaseFragment<SplashFragmentBinding>(SplashFragmentBinding::inflate) {
+    private val viewModel: SplashViewModel by viewModels()
+    override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
+        init()
     }
 
-    private lateinit var viewModel: SplashViewModel
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.splash_fragment, container, false)
+    private fun init() {
+        initAnim()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(SplashViewModel::class.java)
-        // TODO: Use the ViewModel
+    private fun initAnim() {
+        binding.lotieAnim.addAnimatorListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(animation: Animator?) {}
+
+            override fun onAnimationEnd(animation: Animator?) {
+                nextAction()
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {}
+
+            override fun onAnimationRepeat(animation: Animator?) {}
+
+        })
     }
 
+    private fun nextAction() {
+        if (viewModel.checkSession())
+            findNavController().navigate(R.id.action_splashFragment_to_dashboardFragment)
+        else
+            findNavController().navigate(R.id.action_splashFragment_to_logInFragment)
+    }
 }

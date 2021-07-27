@@ -98,5 +98,7 @@ dependencies {
     implementation 'com.github.CanHub:Android-Image-Cropper:3.2.1'
     //paging
     implementation("androidx.paging:paging-runtime-ktx:3.0.1")
+    //lottie
+    implementation 'com.airbnb.android:lottie:3.7.0'
 
 }

@@ -40,4 +40,5 @@ object Constants {
     const val CONTENT_TYPE = "application/json"
 
     const val WEATHER_API_ID = "d700f91c7d83f5bfe2a776a28ba28f02"
+    const val METRIC ="metric"
 }

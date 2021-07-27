@@ -56,14 +56,14 @@
     <string name="publish">Publish</string>
     <string name="please_choose_post_publish_type">Please Choose Post Publish Type</string>
     <string name="message">Message..</string>
-    <string name="confirmed">confirmed</string>
-    <string name="today">today</string>
-    <string name="wind">wind</string>
-    <string name="humidity">humidity</string>
-    <string name="weather">weather</string>
-    <string name="visibility">visibility</string>
-    <string name="recovered">recovered</string>
-    <string name="deaths">death</string>
-    <string name="statistics_of_corona">Statistics of corona</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="today">Today</string>
+    <string name="wind">Wind</string>
+    <string name="humidity">Humidity</string>
+    <string name="weather">Weather</string>
+    <string name="visibility">Visibility</string>
+    <string name="recovered">Recovered</string>
+    <string name="deaths">Death</string>
+    <string name="statistics_of_corona">Statistics of Corona</string>
     <string name="news">News</string>
 </resources>
