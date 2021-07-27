@@ -38,4 +38,6 @@ object Constants {
 
     const val SERVER_KEY = "AAAAqtApo-w:APA91bEK0p6-eHm_-hidQ178S8cJBhPGcDR8SYIm61_e1KgZrjLj7m5AgEQzO331hIKYV_GIgNDo1A-GGjY8__woPfOIJsW9WwBUWFVJ11_HnM7j7Vpyj6P-ypDTW-2ykGwMpp_9Cymu"
     const val CONTENT_TYPE = "application/json"
+
+    const val WEATHER_API_ID = "d700f91c7d83f5bfe2a776a28ba28f02"
 }

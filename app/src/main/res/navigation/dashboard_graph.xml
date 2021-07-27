@@ -134,4 +134,8 @@
             android:name="receiverId"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/newsFragment"
+        android:name="com.example.you.ui.fragments.news.NewsFragment"
+        android:label="NewsFragment" /><action android:id="@+id/action_global_newsFragment" app:destination="@id/newsFragment"/>
 </navigation>

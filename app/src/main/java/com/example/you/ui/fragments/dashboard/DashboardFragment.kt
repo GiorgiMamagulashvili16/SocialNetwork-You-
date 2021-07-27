@@ -121,10 +121,16 @@ class DashboardFragment :
                     getString(string.profile)
                 ),
                 DrawerItem(
-                    UNDERLINED_DRAWER_ITEM,
+                    DEFAULT_DRAWER_ITEM,
                     DashboardGraphDirections.actionGlobalAddPostFragment2(),
                     drawable.ic_add,
                     getString(string.add_post)
+                ),
+                DrawerItem(
+                    UNDERLINED_DRAWER_ITEM,
+                    DashboardGraphDirections.actionGlobalNewsFragment(),
+                    drawable.ic_leadboard,
+                    getString(string.news)
                 ),
                 DrawerItem(
                     DEFAULT_DRAWER_ITEM,

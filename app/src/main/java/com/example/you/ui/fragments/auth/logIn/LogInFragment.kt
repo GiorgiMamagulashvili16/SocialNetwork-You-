@@ -92,13 +92,13 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
     }
 
 
-    override fun onStart() {
-        super.onStart()
-        val user = Firebase.auth.currentUser
-        if (user != null) {
-            findNavController().navigate(R.id.action_logInFragment_to_dashboardFragment)
-        }
-    }
+//    override fun onStart() {
+//        super.onStart()
+//        val user = Firebase.auth.currentUser
+//        if (user != null) {
+//            findNavController().navigate(R.id.action_logInFragment_to_dashboardFragment)
+//        }
+//    }
 
     private fun logIn() {
         val email = binding.etEmail.text.toString()

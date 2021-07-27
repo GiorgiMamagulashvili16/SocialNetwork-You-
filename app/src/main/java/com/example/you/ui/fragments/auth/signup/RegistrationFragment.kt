@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.location.Location
 import android.net.Uri
 import android.os.Looper
+import android.util.Log
 import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -88,8 +89,6 @@ class RegistrationFragment :
         })
     }
 
-
-
     private fun mediaPermissionRequest() {
         when {
             hasCameraPermission() && hasReadExtStoragePermission() && hasWriteExtStoragePermission() -> {
@@ -147,7 +146,7 @@ class RegistrationFragment :
     private fun locationPermissionsRequest() {
         when {
             hasFineLocationPermission() && hasCoarseLocationPermission() -> {
-                getLocation()
+              getLocation()
             }
             ActivityCompat.shouldShowRequestPermissionRationale(
                 requireActivity(),
