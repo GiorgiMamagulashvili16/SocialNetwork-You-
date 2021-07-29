@@ -9,7 +9,8 @@ import com.example.you.util.Resource
 
 interface PostRepository {
 
-    suspend fun addPost(imageUri: Uri, postText: String,postType:String): Resource<Any>
+    suspend fun addPost(imageUri: Uri, postText: String,postType:String,lat: Double,
+                        long: Double): Resource<Any>
     suspend fun getUser(uid: String): Resource<UserModel>
     suspend fun addComment(postId: String, text: String): Resource<Any>
     suspend fun getCommentForPost(postId: String): Resource<List<Comment>>

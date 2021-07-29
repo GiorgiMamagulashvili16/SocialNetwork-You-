@@ -36,15 +36,9 @@ class PostViewModel @Inject constructor(
         MutableLiveData<Resource<Boolean>>()
     }
     val postLikes: LiveData<Resource<Boolean>> = _postLikes
+
     private val _deletePostResponse by lazy {
         MutableLiveData<Resource<Any>>()
-    }
-    val deletePostResponse: LiveData<Resource<Any>> = _deletePostResponse
-    fun deletePost(postId: String) = viewModelScope.launch {
-        _deletePostResponse.postValue(Resource.Loading())
-        withContext(Dispatchers.IO) {
-            _deletePostResponse.postValue(repository.deletePost(postId))
-        }
     }
 
     fun getAllPost(): Flow<PagingData<Post>> {

@@ -16,5 +16,7 @@ data class Post(
     @get:Exclude var isLiked: Boolean = false,
     var likedBy: List<String> = listOf(),
     val date: Long = 0L,
-    @get:Exclude var likeLoading: Boolean = false
+    @get:Exclude var likeLoading: Boolean = false,
+    val lat: Double = 0.0,
+    val long: Double = 0.0,
 )

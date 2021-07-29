@@ -6,6 +6,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -16,9 +17,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.you.adapters.posts.PostPagingAdapter
 import com.example.you.databinding.RadiusFragmentBinding
 import com.example.you.ui.base.BaseFragment
-import com.example.you.ui.fragments.posts.PostFragmentDirections
+import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Resource
 import com.google.android.gms.location.*
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -41,7 +43,7 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
     }
 
     private fun init() {
-        getLocation()
+        locationPermissionsRequest()
         initRecycle()
         observeAddCommentResponse()
         observePostLikes()
@@ -57,6 +59,48 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
             }
         }
     }
+    private fun locationPermissionsRequest() {
+        when {
+            hasFineLocationPermission() && hasCoarseLocationPermission() -> {
+                getLocation()
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) -> {
+                Snackbar.make(
+                    binding.root,
+                    getString(string.app_needs_this_permission),
+                    Snackbar.LENGTH_INDEFINITE
+                ).apply {
+                    setAction(getString(string.ok)) {
+                        requestLocationPermissions(locationPermissionsLauncher)
+                    }
+                }.show()
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) -> {
+                Snackbar.make(
+                    binding.root,
+                    getString(string.app_needs_this_permission),
+                    Snackbar.LENGTH_INDEFINITE
+                ).apply {
+                    setAction(getString(string.ok)) {
+                        requestLocationPermissions(permissionsLauncher)
+                    }
+                }.show()
+            }
+            else -> requestLocationPermissions(locationPermissionsLauncher)
+        }
+    }
+    private val locationPermissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perm ->
+            if (perm[Manifest.permission.ACCESS_FINE_LOCATION] == true && perm[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                getLocation()
+            }
+        }
 
     private fun getLocation() {
         fusedLocationProviderClient =

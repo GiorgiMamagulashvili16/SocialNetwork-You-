@@ -28,8 +28,6 @@ class RegistrationViewModel @Inject constructor(
         email: String,
         password: String,
         userName: String,
-        lat: Number,
-        long: Number,
         imageUri: Uri
     ) =
         viewModelScope.launch {
@@ -40,8 +38,6 @@ class RegistrationViewModel @Inject constructor(
                         email,
                         password,
                         userName,
-                        lat,
-                        long,
                         imageUri
                     )
                 )

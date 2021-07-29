@@ -1,8 +1,12 @@
 package com.example.you.ui.fragments.addpost
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
 import android.net.Uri
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,19 +26,28 @@ import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Constants.POST_TYPE_FOR_ALL
 import com.example.you.util.Constants.POST_TYPE_FOR_RADIUS
 import com.example.you.util.Resource
+import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBinding::inflate) {
 
     private var postImageView: Uri? = null
     private val viewModel: AddPostViewModel by viewModels()
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
+
     override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
         init()
     }
 
     private fun init() {
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireContext())
+        locationPermissionsRequest()
         setListener()
         observePostResponse()
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
@@ -50,14 +63,10 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
 
     private fun setListener() {
         binding.btnAddPost.setOnClickListener {
-            if (postImageView != null) {
-                addPost()
-            } else {
-                createInfoSnackBar(getString(string.please_choose_post_image), Color.RED)
-            }
+
         }
         binding.tvAddPicture.setOnClickListener {
-           mediaPermissionRequest()
+            mediaPermissionRequest()
         }
     }
 
@@ -78,6 +87,7 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
             }
         })
     }
+
     private fun mediaPermissionRequest() {
         when {
             hasCameraPermission() && hasReadExtStoragePermission() && hasWriteExtStoragePermission() -> {
@@ -112,8 +122,50 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
             else -> requestMediaPermissions(mediaLocationLauncher)
         }
     }
+    private fun locationPermissionsRequest() {
+        when {
+            hasFineLocationPermission() && hasCoarseLocationPermission() -> {
+                getLocation()
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) -> {
+                Snackbar.make(
+                    binding.root,
+                    getString(string.app_needs_this_permission),
+                    Snackbar.LENGTH_INDEFINITE
+                ).apply {
+                    setAction(getString(string.ok)) {
+                        requestLocationPermissions(locationPermissionsLauncher)
+                    }
+                }.show()
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) -> {
+                Snackbar.make(
+                    binding.root,
+                    getString(string.app_needs_this_permission),
+                    Snackbar.LENGTH_INDEFINITE
+                ).apply {
+                    setAction(getString(string.ok)) {
+                        requestLocationPermissions(locationPermissionsLauncher)
+                    }
+                }.show()
+            }
+            else -> requestLocationPermissions(locationPermissionsLauncher)
+        }
+    }
+    private val locationPermissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perm ->
+            if (perm[Manifest.permission.ACCESS_FINE_LOCATION] == true && perm[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                getLocation()
+            }
+        }
 
-    private fun addPost() {
+    private fun addPost(location: Location) {
         var postType = POST_TYPE_FOR_ALL
         val chipForRadius = binding.chipsForRadius
         val chipForAll = binding.chipForAll
@@ -134,11 +186,50 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
                         R.id.chipForAll -> postType = POST_TYPE_FOR_ALL
                     }
                 }
-                viewModel.addPost(postImageView!!, postText, postType)
+                viewModel.addPost(
+                    postImageView!!,
+                    postText,
+                    postType,
+                    location.latitude,
+                    location.longitude
+                )
             } else {
                 createInfoSnackBar(getString(string.please_choose_post_publish_type), Color.RED)
             }
         }
+    }
+
+    private fun getLocation() {
+        locationRequest = LocationRequest.create().apply {
+            interval = TimeUnit.SECONDS.toMillis(60)
+            fastestInterval = TimeUnit.SECONDS.toMillis(30)
+            maxWaitTime = TimeUnit.MINUTES.toMillis(1)
+        }
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                super.onLocationResult(locationResult)
+                binding.btnAddPost.setOnClickListener {
+                    postImageView?.let {
+                        addPost(locationResult.lastLocation)
+                    } ?:  createInfoSnackBar(getString(string.please_choose_post_image), Color.RED)
+                }
+            }
+        }
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            Looper.getMainLooper()
+        )
     }
 
     private val cropImageContract = registerForActivityResult(CropImageContract()) { result ->
@@ -159,6 +250,7 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
             }
         )
     }
+
     private val mediaLocationLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perm ->
             if (perm[Manifest.permission.CAMERA] == true && perm[Manifest.permission.READ_EXTERNAL_STORAGE] == true &&
@@ -167,5 +259,16 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
                 openMedia()
             }
         }
+    override fun onPause() {
+        super.onPause()
+        val removeLocationUpdate =
+            fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        removeLocationUpdate.addOnCompleteListener { task ->
+            if (task.isSuccessful)
+                Log.d("RemoveLocationUpdate", "successfully removed")
+            else
+                Log.d("RemoveLocationUpdate", "failure")
+        }
+    }
 
 }

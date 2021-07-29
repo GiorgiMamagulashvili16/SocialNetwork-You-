@@ -10,8 +10,6 @@ interface AuthRepository {
         email: String,
         password: String,
         userName: String,
-        lat: Number,
-        long: Number,
         imageUri: Uri
     ): Resource<AuthResult>
 

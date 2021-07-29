@@ -19,6 +19,7 @@ import com.example.you.extensions.createInfoSnackBar
 import com.example.you.extensions.setDialog
 import com.example.you.ui.fragments.dashboard.string
 import com.example.you.ui.fragments.posts.PostViewModel
+import com.example.you.util.ConnectionLiveData
 import com.example.you.util.Resource
 
 typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
@@ -31,13 +32,13 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
 
     private var loadingDialog: Dialog? = null
     private var linearLoadingDialog: Dialog? = null
-    private var deletePostDialog: Dialog? = null
     private var errorDialog: Dialog? = null
     private var addCommentDialog: Dialog? = null
 
 
     private val postViewModel: PostViewModel by viewModels()
 
+    protected var hasInternetConnection:Boolean? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,11 +47,17 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
     ): View? {
         _binding = inflate.invoke(layoutInflater, container, false)
         start(layoutInflater, container)
+        observeInternetConnection()
         return binding.root
     }
 
     abstract fun start(inflater: LayoutInflater, viewGroup: ViewGroup?)
 
+    private fun observeInternetConnection() {
+        ConnectionLiveData(requireContext()).observe(viewLifecycleOwner, {
+            hasInternetConnection = it
+        })
+    }
     protected fun requestMediaPermissions(request: ActivityResultLauncher<Array<String>>) {
         request.launch(
             arrayOf(
@@ -110,25 +117,6 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
 
     protected fun dismissLoadingDialog() {
         loadingDialog!!.hide()
-    }
-
-    protected fun showDeletePostDialog(postId: String) {
-        deletePostDialog = Dialog(requireContext())
-        val binding = DialogDeletePostBinding.inflate(layoutInflater)
-        deletePostDialog!!.setDialog(binding)
-        binding.apply {
-            btnYes.setOnClickListener {
-                postViewModel.deletePost(postId)
-            }
-            btnNo.setOnClickListener {
-                deletePostDialog!!.dismiss()
-            }
-        }
-        deletePostDialog!!.show()
-    }
-
-    protected fun dismissDeletePostDialog() {
-        deletePostDialog!!.dismiss()
     }
 
     protected fun showErrorDialog(text: String) {

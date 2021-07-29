@@ -1,13 +1,10 @@
 package com.example.you.ui.fragments.auth.logIn
 
-import android.Manifest
 import android.graphics.Color
 import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.you.MainGraphDirections
@@ -18,7 +15,6 @@ import com.example.you.extensions.slideUp
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Resource
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,58 +42,15 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
 
     private fun setListeners() {
         binding.btnSignIn.setOnClickListener {
-            logIn()
+            if (hasInternetConnection == true)
+                logIn()
+            else
+                showErrorDialog(getString(string.no_internet_connection))
         }
         binding.tvRegister.setOnClickListener {
-            locationPermissionsRequest()
-
+            findNavController().navigate(MainGraphDirections.actionGlobalRegistrationFragment())
         }
     }
-
-    private fun locationPermissionsRequest() {
-        when {
-            hasFineLocationPermission() && hasCoarseLocationPermission() -> {
-                findNavController().navigate(MainGraphDirections.actionGlobalRegistrationFragment())
-            }
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                requireActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) -> {
-                Snackbar.make(
-                    binding.root,
-                    getString(string.app_needs_this_permission),
-                    Snackbar.LENGTH_INDEFINITE
-                ).apply {
-                    setAction(getString(string.ok)) {
-                        requestLocationPermissions(permissionsLauncher)
-                    }
-                }.show()
-            }
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                requireActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) -> {
-                Snackbar.make(
-                    binding.root,
-                    getString(string.app_needs_this_permission),
-                    Snackbar.LENGTH_INDEFINITE
-                ).apply {
-                    setAction(getString(string.ok)) {
-                        requestLocationPermissions(locationPermissionsLauncher)
-                    }
-                }.show()
-            }
-            else -> requestLocationPermissions(locationPermissionsLauncher)
-        }
-    }
-
-    private val locationPermissionsLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perm ->
-            if (perm[Manifest.permission.ACCESS_FINE_LOCATION] == true && perm[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
-                findNavController().navigate(MainGraphDirections.actionGlobalRegistrationFragment())
-            }
-        }
-
 
     private fun logIn() {
         val email = binding.etEmail.text.toString()
@@ -117,7 +70,7 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
                     findNavController().navigate(R.id.action_logInFragment_to_dashboardFragment)
                 }
                 is Resource.Error -> {
-                    d("LogginError","${it.errorMessage}")
+                    d("LogginError", "${it.errorMessage}")
                     it.errorMessage?.let { message -> showErrorDialog(message) }
                     dismissLinearLoadingDialog()
                 }

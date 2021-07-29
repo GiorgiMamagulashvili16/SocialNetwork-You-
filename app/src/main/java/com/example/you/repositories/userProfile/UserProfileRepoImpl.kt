@@ -10,6 +10,7 @@ import com.example.you.util.Constants.USER_COLLECTION_NAME
 import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -27,16 +28,8 @@ class UserProfileRepoImpl @Inject constructor(
 
     override suspend fun getUser(uid: String): Resource<UserModel> = withContext(Dispatchers.IO) {
         return@withContext try {
-            val currentUser = usersCollection.document(uid).get().await()
-            val currentUserModel = UserModel(
-                currentUser["uid"] as String,
-                currentUser["userName"] as String,
-                currentUser["description"] as String,
-                currentUser["lat"] as Double,
-                currentUser["long"] as Double,
-                currentUser["profileImageUrl"] as String,
-            )
-            Resource.Success(currentUserModel)
+            val currentUser = usersCollection.document(uid).get().await().toObject<UserModel>()!!
+            Resource.Success(currentUser)
         } catch (e: Exception) {
             Resource.Error(e.toString())
         }
@@ -47,7 +40,6 @@ class UserProfileRepoImpl @Inject constructor(
             return@withContext try {
                 val user = getUser(uid).data!!
                 storage.getReferenceFromUrl(user.profileImageUrl).delete().await()
-
                 val uriUpload = storage.getReference(uid).putFile(imageUri)
                     .await()
                 val newUri = uriUpload.metadata?.reference?.downloadUrl?.await()

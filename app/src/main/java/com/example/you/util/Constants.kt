@@ -15,13 +15,14 @@ object Constants {
     const val AUTHOR_ID_FIELD=  "authorId"
     const val POST_TYPE_FIELD = "postType"
     const val TIME_FIELD = "time"
+    const val DATE_FIELD = "date"
 
     const val DRAWER_LOG_OUT_INDEX = 6
 
     const val POST_PAGE_SIZE = 5
 
     const val CURRENT_USER_LOCATION = "current_user_location"
-    const val OTHER_USER_LOCATION = "other_user_location"
+    const val OTHER_POST_LOCATION = "other_POST_location"
     const val DISTANCE_RADIUS = 5000.0
 
     const val POST_TYPE_FOR_RADIUS = "for_radius"

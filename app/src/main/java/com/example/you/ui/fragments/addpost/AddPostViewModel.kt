@@ -23,10 +23,10 @@ class AddPostViewModel @Inject constructor(
     }
     val addPostResponse: LiveData<Resource<Any>> = _addPostResponse
 
-    fun addPost(imageUri: Uri, postText: String,postType:String) = viewModelScope.launch {
+    fun addPost(imageUri: Uri, postText: String,postType:String,lat:Double,long:Double) = viewModelScope.launch {
         _addPostResponse.postValue(Resource.Loading())
         withContext(Dispatchers.IO) {
-            _addPostResponse.postValue(repository.addPost(imageUri, postText,postType))
+            _addPostResponse.postValue(repository.addPost(imageUri, postText,postType,lat, long))
         }
     }
 }

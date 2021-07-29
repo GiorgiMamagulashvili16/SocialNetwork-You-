@@ -8,12 +8,16 @@ import com.example.you.models.user.UserModel
 import com.example.you.util.Constants
 import com.example.you.util.Constants.AUTHOR_ID_FIELD
 import com.example.you.util.Constants.CURRENT_USER_LOCATION
+import com.example.you.util.Constants.DATE_FIELD
 import com.example.you.util.Constants.DISTANCE_RADIUS
-import com.example.you.util.Constants.OTHER_USER_LOCATION
+import com.example.you.util.Constants.OTHER_POST_LOCATION
 import com.example.you.util.Constants.POSTS_COLLECTION_NAME
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.ktx.toObjects
 import kotlinx.coroutines.tasks.await
 
 class RadiusPostSource(
@@ -22,51 +26,45 @@ class RadiusPostSource(
     private val location: Location
 ) : PagingSource<QuerySnapshot, Post>() {
     override fun getRefreshKey(state: PagingState<QuerySnapshot, Post>): QuerySnapshot? {
-        TODO("Not yet implemented")
+       return null
     }
 
     override suspend fun load(params: LoadParams<QuerySnapshot>): LoadResult<QuerySnapshot, Post> {
         return try {
             val uid = auth.currentUser?.uid!!
             val currentPage = params.key ?: fireStore.collection(POSTS_COLLECTION_NAME)
-                .whereNotEqualTo(AUTHOR_ID_FIELD, uid)
+                .orderBy(DATE_FIELD, Query.Direction.DESCENDING)
                 .get()
                 .await()
             val lastDocument = currentPage.documents[currentPage.size() - 1]
 
             val nextPage = fireStore.collection(POSTS_COLLECTION_NAME)
-                .whereNotEqualTo(AUTHOR_ID_FIELD, auth.currentUser?.uid!!)
+                .orderBy(DATE_FIELD, Query.Direction.DESCENDING)
                 .startAfter(lastDocument)
                 .get()
                 .await()
             val result = mutableListOf<Post>()
-            currentPage.toObjects(Post::class.java).onEach { post ->
+            currentPage.toObjects<Post>().onEach { post ->
                 val currentUser =
                     fireStore.collection(Constants.USER_COLLECTION_NAME).document(post.authorId)
                         .get()
                         .await()
-                val currentUserModel = UserModel(
-                    currentUser["uid"] as String,
-                    currentUser["userName"] as String,
-                    currentUser["description"] as String,
-                    currentUser["lat"] as Double,
-                    currentUser["long"] as Double,
-                    profileImageUrl = currentUser["profileImageUrl"] as String,
-                )
+                        .toObject<UserModel>()!!
+
                 post.apply {
-                    authorUserName = currentUserModel.userName
-                    authorProfileImageUrl = currentUserModel.profileImageUrl
+                    authorUserName = currentUser.userName
+                    authorProfileImageUrl = currentUser.profileImageUrl
                     isLiked = auth.currentUser?.uid!! in post.likedBy
                 }
                 val currentUserLocation = Location(CURRENT_USER_LOCATION).apply {
                     latitude = location.latitude
                     longitude = location.longitude
                 }
-                val otherUserLocation = Location(OTHER_USER_LOCATION).apply {
-                    latitude = currentUserModel.lat as Double
-                    longitude = currentUserModel.long as Double
+                val postLocation = Location(OTHER_POST_LOCATION).apply {
+                    latitude = post.lat
+                    longitude = post.long
                 }
-                if (currentUserLocation.distanceTo(otherUserLocation) < DISTANCE_RADIUS) {
+                if (currentUserLocation.distanceTo(postLocation) < DISTANCE_RADIUS && post.authorId != uid){
                     result.add(post)
                 }
             }

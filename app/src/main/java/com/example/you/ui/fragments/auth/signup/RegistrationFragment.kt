@@ -1,11 +1,8 @@
 package com.example.you.ui.fragments.auth.signup
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.graphics.Color
-import android.location.Location
 import android.net.Uri
-import android.os.Looper
 import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -24,20 +21,14 @@ import com.example.you.extensions.slideUp
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Resource
-import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class RegistrationFragment :
     BaseFragment<RegistrationFragmentBinding>(RegistrationFragmentBinding::inflate) {
 
     private val viewModel: RegistrationViewModel by viewModels()
-
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback
 
     private var profileImageUri: Uri? = null
 
@@ -46,11 +37,8 @@ class RegistrationFragment :
     }
 
     private fun init() {
-        fusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(requireContext())
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
         setListeners()
-        locationPermissionsRequest()
         observe()
     }
 
@@ -60,6 +48,12 @@ class RegistrationFragment :
         }
         binding.toSignIN.setOnClickListener {
             findNavController().navigate(R.id.action_registrationFragment_to_logInFragment)
+        }
+        binding.btnSignUp.setOnClickListener {
+            if (hasInternetConnection == true)
+                signUp()
+            else
+                showErrorDialog(getString(string.no_internet_connection))
         }
         slideUp(
             requireContext(),
@@ -145,43 +139,6 @@ class RegistrationFragment :
         )
     }
 
-    private fun locationPermissionsRequest() {
-        when {
-            hasFineLocationPermission() && hasCoarseLocationPermission() -> {
-                getLocation()
-            }
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                requireActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) -> {
-                Snackbar.make(
-                    binding.root,
-                    getString(string.app_needs_this_permission),
-                    Snackbar.LENGTH_INDEFINITE
-                ).apply {
-                    setAction(getString(string.ok)) {
-                        requestLocationPermissions(locationPermissionsLauncher)
-                    }
-                }.show()
-            }
-            ActivityCompat.shouldShowRequestPermissionRationale(
-                requireActivity(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) -> {
-                Snackbar.make(
-                    binding.root,
-                    getString(string.app_needs_this_permission),
-                    Snackbar.LENGTH_INDEFINITE
-                ).apply {
-                    setAction(getString(string.ok)) {
-                        requestLocationPermissions(locationPermissionsLauncher)
-                    }
-                }.show()
-            }
-            else -> requestLocationPermissions(locationPermissionsLauncher)
-        }
-    }
-
     private val mediaLocationLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perm ->
             if (perm[Manifest.permission.CAMERA] == true && perm[Manifest.permission.READ_EXTERNAL_STORAGE] == true &&
@@ -190,46 +147,8 @@ class RegistrationFragment :
                 openMedia()
             }
         }
-    private val locationPermissionsLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perm ->
-            if (perm[Manifest.permission.ACCESS_FINE_LOCATION] == true && perm[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
-                getLocation()
-            }
-        }
 
-    private fun getLocation() {
-        locationRequest = LocationRequest.create().apply {
-            interval = TimeUnit.SECONDS.toMillis(60)
-            fastestInterval = TimeUnit.SECONDS.toMillis(30)
-            maxWaitTime = TimeUnit.MINUTES.toMillis(1)
-        }
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                super.onLocationResult(locationResult)
-                binding.btnSignUp.setOnClickListener {
-                    d("ProFile", "${locationResult.lastLocation}")
-                    signUp(locationResult.lastLocation)
-                }
-            }
-        }
-        if (ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            return
-        }
-        fusedLocationProviderClient.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper()
-        )
-    }
-
-    private fun signUp(location: Location) {
+    private fun signUp() {
         val email = binding.etEmail.text.toString()
         val password = binding.etPassword.text.toString()
         val userName = binding.etUserName.text.toString()
@@ -240,31 +159,16 @@ class RegistrationFragment :
         } else if (repeatPassword != password) {
             createInfoSnackBar(getString(string.password_do_not_match), Color.RED)
         } else {
-            if (profileImageUri == null)
-                createInfoSnackBar(getString(string.please_choose_image), Color.RED)
-            else
+            profileImageUri?.let {
                 viewModel.signUp(
                     email,
                     password,
                     userName,
-                    location.latitude,
-                    location.longitude,
                     profileImageUri!!
                 )
-
+            } ?: createInfoSnackBar(getString(string.please_choose_image), Color.RED)
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        val removeLocationUpdate =
-            fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-        removeLocationUpdate.addOnCompleteListener { task ->
-            if (task.isSuccessful)
-                d("RemoveLocationUpdate", "successfully removed")
-            else
-                d("RemoveLocationUpdate", "failure")
-        }
-    }
 
 }

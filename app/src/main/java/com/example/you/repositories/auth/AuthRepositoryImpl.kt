@@ -24,8 +24,6 @@ class AuthRepositoryImpl @Inject constructor(
         email: String,
         password: String,
         userName: String,
-        lat: Number,
-        long: Number,
         imageUri: Uri
     ): Resource<AuthResult> = withContext(Dispatchers.IO) {
         return@withContext try {
@@ -36,8 +34,6 @@ class AuthRepositoryImpl @Inject constructor(
             val user = UserModel(
                 uid,
                 userName,
-                lat = lat,
-                long = long,
                 profileImageUrl = imageUrl,
             )
             users.document(uid).set(user).await()

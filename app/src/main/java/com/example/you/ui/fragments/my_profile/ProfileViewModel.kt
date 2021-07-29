@@ -59,6 +59,7 @@ class ProfileViewModel @Inject constructor(
         MutableLiveData<Resource<Any>>()
     }
     val deletePostResponse: LiveData<Resource<Any>> = _deletePostResponse
+
     fun deletePost(postId: String) = viewModelScope.launch {
         _deletePostResponse.postValue(Resource.Loading())
         withContext(Dispatchers.IO) {

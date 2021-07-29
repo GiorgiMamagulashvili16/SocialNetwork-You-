@@ -1,5 +1,7 @@
 package com.example.you.ui.fragments.posts
 
+import android.graphics.Color
+import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
@@ -10,7 +12,9 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.you.adapters.posts.PostPagingAdapter
 import com.example.you.databinding.PostFragmentBinding
+import com.example.you.extensions.createInfoSnackBar
 import com.example.you.ui.base.BaseFragment
+import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,10 +33,10 @@ class PostFragment : BaseFragment<PostFragmentBinding>(PostFragmentBinding::infl
 
     private fun init() {
         initRecycleView()
+        setAdapterListeners()
+        getPosts()
         observeAddCommentResponse()
         observePostLikes()
-        getPosts()
-        setAdapterListeners()
     }
 
     private fun getPosts() {
@@ -43,10 +47,10 @@ class PostFragment : BaseFragment<PostFragmentBinding>(PostFragmentBinding::infl
         }
         lifecycleScope.launch {
             postAdapter.loadStateFlow.collect {
-                if ( it.refresh is LoadState.Loading || it.append is LoadState.Loading)
+                if (it.refresh is LoadState.Loading || it.append is LoadState.Loading)
                     showLinearLoading()
                 else
-                   dismissLinearLoadingDialog()
+                    dismissLinearLoadingDialog()
 
             }
         }

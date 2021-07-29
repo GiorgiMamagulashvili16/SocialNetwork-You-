@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.you.DashboardGraphDirections
 import com.example.you.R
 import com.example.you.adapters.posts.GridPostAdapter
+import com.example.you.databinding.DialogDeletePostBinding
 import com.example.you.databinding.DialogGridPostBinding
 import com.example.you.databinding.GridPostFragmentBinding
 import com.example.you.extensions.createInfoSnackBar
@@ -20,7 +21,6 @@ import com.example.you.extensions.setDialog
 import com.example.you.models.post.Post
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
-import com.example.you.ui.fragments.my_profile.ProfileFragmentDirections
 import com.example.you.ui.fragments.my_profile.ProfileViewModel
 import com.example.you.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,6 +32,7 @@ class GridPostFragment : BaseFragment<GridPostFragmentBinding>(GridPostFragmentB
     private val viewModel: ProfileViewModel by viewModels()
 
     private var postDialog: Dialog? = null
+    private var deletePostDialog: Dialog? = null
 
     override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
         init()
@@ -66,8 +67,8 @@ class GridPostFragment : BaseFragment<GridPostFragmentBinding>(GridPostFragmentB
                 is Resource.Success -> {
                     dismissLoadingDialog()
                     postDialog?.dismiss()
-                    dismissDeletePostDialog()
-                    findNavController().navigate(R.id.action_global_dashboardFragment)
+                    deletePostDialog?.dismiss()
+                    findNavController().navigate(DashboardGraphDirections.actionGlobalProfileFragment())
                     createInfoSnackBar(getString(string.successfully_deleted), Color.GREEN)
                 }
                 is Resource.Error -> {
@@ -79,6 +80,21 @@ class GridPostFragment : BaseFragment<GridPostFragmentBinding>(GridPostFragmentB
                 }
             }
         })
+    }
+
+    private fun showDeletePostDialog(postId: String) {
+        deletePostDialog = Dialog(requireContext())
+        val binding = DialogDeletePostBinding.inflate(layoutInflater)
+        deletePostDialog!!.setDialog(binding)
+        binding.apply {
+            btnYes.setOnClickListener {
+                viewModel.deletePost(postId)
+            }
+            btnNo.setOnClickListener {
+                deletePostDialog!!.dismiss()
+            }
+        }
+        deletePostDialog!!.show()
     }
 
     private fun initRec() {

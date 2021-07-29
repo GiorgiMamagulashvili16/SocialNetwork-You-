@@ -1,5 +1,6 @@
 package com.example.you.ui.fragments.my_profile.posts
 
+import android.app.Dialog
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,10 +9,11 @@ import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.you.DashboardGraphDirections
-import com.example.you.R
 import com.example.you.adapters.posts.PostAdapter
+import com.example.you.databinding.DialogDeletePostBinding
 import com.example.you.databinding.ListPostFragmentBinding
 import com.example.you.extensions.createInfoSnackBar
+import com.example.you.extensions.setDialog
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
 import com.example.you.ui.fragments.my_profile.ProfileFragmentDirections
@@ -23,6 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class ListPostFragment : BaseFragment<ListPostFragmentBinding>(ListPostFragmentBinding::inflate) {
     private val postAdapter by lazy { PostAdapter() }
     private val viewModel: ProfileViewModel by viewModels()
+    private var deletePostDialog: Dialog? = null
 
     private var currentPostId = ""
     override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
@@ -61,7 +64,7 @@ class ListPostFragment : BaseFragment<ListPostFragmentBinding>(ListPostFragmentB
             when (it) {
                 is Resource.Success -> {
                     dismissLoadingDialog()
-                    dismissDeletePostDialog()
+                    deletePostDialog?.dismiss()
                     viewModel.deleteCommentsByPost(currentPostId)
                 }
                 is Resource.Error -> {
@@ -80,7 +83,7 @@ class ListPostFragment : BaseFragment<ListPostFragmentBinding>(ListPostFragmentB
             when (it) {
                 is Resource.Success -> {
                     dismissLoadingDialog()
-                    findNavController().navigate(ProfileFragmentDirections.actionGlobalPostFragment())
+                    findNavController().navigate(DashboardGraphDirections.actionGlobalProfileFragment())
                     createInfoSnackBar(getString(string.successfully_deleted), Color.GREEN)
                 }
                 is Resource.Error -> {
@@ -92,6 +95,21 @@ class ListPostFragment : BaseFragment<ListPostFragmentBinding>(ListPostFragmentB
                 }
             }
         })
+    }
+
+    private fun showDeletePostDialog(postId: String) {
+        deletePostDialog = Dialog(requireContext())
+        val binding = DialogDeletePostBinding.inflate(layoutInflater)
+        deletePostDialog!!.setDialog(binding)
+        binding.apply {
+            btnYes.setOnClickListener {
+                viewModel.deletePost(postId)
+            }
+            btnNo.setOnClickListener {
+                deletePostDialog!!.dismiss()
+            }
+        }
+        deletePostDialog!!.show()
     }
 
     private fun initRec() {
