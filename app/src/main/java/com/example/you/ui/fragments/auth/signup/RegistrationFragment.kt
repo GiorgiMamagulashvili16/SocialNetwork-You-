@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.location.Location
 import android.net.Uri
 import android.os.Looper
-import android.util.Log
 import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -59,6 +58,9 @@ class RegistrationFragment :
         binding.btnAddImage.setOnClickListener {
             mediaPermissionRequest()
         }
+        binding.toSignIN.setOnClickListener {
+            findNavController().navigate(R.id.action_registrationFragment_to_logInFragment)
+        }
         slideUp(
             requireContext(),
             binding.etEmail,
@@ -83,7 +85,7 @@ class RegistrationFragment :
                     dismissLinearLoadingDialog()
                 }
                 is Resource.Loading -> {
-                   showLinearLoading()
+                    showLinearLoading()
                 }
             }
         })
@@ -104,7 +106,7 @@ class RegistrationFragment :
                     Snackbar.LENGTH_INDEFINITE
                 ).apply {
                     setAction(getString(string.ok)) {
-                        requestMediaPermissions(permissionsLauncher)
+                        requestMediaPermissions(mediaLocationLauncher)
                     }
                 }.show()
             }
@@ -117,10 +119,10 @@ class RegistrationFragment :
                 Snackbar.LENGTH_INDEFINITE
             ).apply {
                 setAction(getString(string.ok)) {
-                    requestMediaPermissions(permissionsLauncher)
+                    requestMediaPermissions(mediaLocationLauncher)
                 }
             }.show()
-            else -> requestMediaPermissions(permissionsLauncher)
+            else -> requestMediaPermissions(mediaLocationLauncher)
         }
     }
 
@@ -146,7 +148,7 @@ class RegistrationFragment :
     private fun locationPermissionsRequest() {
         when {
             hasFineLocationPermission() && hasCoarseLocationPermission() -> {
-              getLocation()
+                getLocation()
             }
             ActivityCompat.shouldShowRequestPermissionRationale(
                 requireActivity(),
@@ -158,7 +160,7 @@ class RegistrationFragment :
                     Snackbar.LENGTH_INDEFINITE
                 ).apply {
                     setAction(getString(string.ok)) {
-                        requestLocationPermissions(permissionsLauncher)
+                        requestLocationPermissions(locationPermissionsLauncher)
                     }
                 }.show()
             }
@@ -172,13 +174,28 @@ class RegistrationFragment :
                     Snackbar.LENGTH_INDEFINITE
                 ).apply {
                     setAction(getString(string.ok)) {
-                        requestLocationPermissions(permissionsLauncher)
+                        requestLocationPermissions(locationPermissionsLauncher)
                     }
                 }.show()
             }
-            else -> requestLocationPermissions(permissionsLauncher)
+            else -> requestLocationPermissions(locationPermissionsLauncher)
         }
     }
+
+    private val mediaLocationLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perm ->
+            if (perm[Manifest.permission.CAMERA] == true && perm[Manifest.permission.READ_EXTERNAL_STORAGE] == true &&
+                perm[Manifest.permission.WRITE_EXTERNAL_STORAGE] == true
+            ) {
+                openMedia()
+            }
+        }
+    private val locationPermissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perm ->
+            if (perm[Manifest.permission.ACCESS_FINE_LOCATION] == true && perm[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                getLocation()
+            }
+        }
 
     private fun getLocation() {
         locationRequest = LocationRequest.create().apply {

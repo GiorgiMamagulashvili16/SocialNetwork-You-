@@ -135,7 +135,8 @@ class NewsFragment : BaseFragment<NewsFragmentBinding>(NewsFragmentBinding::infl
                     val totalRecovered = info.recovered.toString()
                     val todayCases = info.todayCases.toString()
                     val todayDeaths = info.todayDeaths.toString()
-                    val todayRecovered = "No Info"
+                    val todayRecovered = info.todayRecovered.toString()
+
                     setCoronaStatistics(totalCases, totalDeaths, totalRecovered, "Today")
                     binding.btnTimeIndicator.setOnClickListener {
                         isToday = if (isToday) {
@@ -171,6 +172,7 @@ class NewsFragment : BaseFragment<NewsFragmentBinding>(NewsFragmentBinding::infl
             btnTimeIndicator.text = buttonText
         }
     }
+
     override fun onPause() {
         super.onPause()
         val removeLocationUpdate =

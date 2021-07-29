@@ -2,12 +2,15 @@ package com.example.you.ui.fragments.auth.logIn
 
 import android.Manifest
 import android.graphics.Color
+import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.you.MainGraphDirections
 import com.example.you.R
 import com.example.you.databinding.LogInFragmentBinding
 import com.example.you.extensions.createInfoSnackBar
@@ -16,8 +19,6 @@ import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Resource
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -56,7 +57,7 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
     private fun locationPermissionsRequest() {
         when {
             hasFineLocationPermission() && hasCoarseLocationPermission() -> {
-                findNavController().navigate(R.id.action_logInFragment_to_registrationFragment)
+                findNavController().navigate(MainGraphDirections.actionGlobalRegistrationFragment())
             }
             ActivityCompat.shouldShowRequestPermissionRationale(
                 requireActivity(),
@@ -82,13 +83,20 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
                     Snackbar.LENGTH_INDEFINITE
                 ).apply {
                     setAction(getString(string.ok)) {
-                        requestLocationPermissions(permissionsLauncher)
+                        requestLocationPermissions(locationPermissionsLauncher)
                     }
                 }.show()
             }
-            else -> requestLocationPermissions(permissionsLauncher)
+            else -> requestLocationPermissions(locationPermissionsLauncher)
         }
     }
+
+    private val locationPermissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perm ->
+            if (perm[Manifest.permission.ACCESS_FINE_LOCATION] == true && perm[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
+                findNavController().navigate(MainGraphDirections.actionGlobalRegistrationFragment())
+            }
+        }
 
 
     private fun logIn() {
@@ -109,6 +117,7 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
                     findNavController().navigate(R.id.action_logInFragment_to_dashboardFragment)
                 }
                 is Resource.Error -> {
+                    d("LogginError","${it.errorMessage}")
                     it.errorMessage?.let { message -> showErrorDialog(message) }
                     dismissLinearLoadingDialog()
                 }

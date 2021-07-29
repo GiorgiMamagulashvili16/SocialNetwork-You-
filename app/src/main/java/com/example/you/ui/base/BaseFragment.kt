@@ -4,15 +4,12 @@ import android.Manifest
 import android.app.Dialog
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.location.Location
 import android.os.Bundle
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -23,8 +20,6 @@ import com.example.you.extensions.setDialog
 import com.example.you.ui.fragments.dashboard.string
 import com.example.you.ui.fragments.posts.PostViewModel
 import com.example.you.util.Resource
-import com.google.android.gms.location.*
-import java.util.concurrent.TimeUnit
 
 typealias Inflate<T> = (LayoutInflater, ViewGroup?, Boolean) -> T
 
@@ -146,18 +141,18 @@ abstract class BaseFragment<VB : ViewBinding>(private val inflate: Inflate<VB>) 
                 errorDialog!!.dismiss()
             }
         }
-        errorDialog!!.show()
+        errorDialog?.show()
     }
 
     protected fun showLinearLoading() {
         linearLoadingDialog = Dialog(requireContext())
         val dialogBinding = DialogLinearLoadingBinding.inflate(layoutInflater)
         linearLoadingDialog!!.setDialog(dialogBinding)
-        linearLoadingDialog!!.show()
+        linearLoadingDialog?.show()
     }
 
     protected fun dismissLinearLoadingDialog() {
-        linearLoadingDialog!!.dismiss()
+        linearLoadingDialog?.dismiss()
     }
 
     protected fun showAddCommentDialog(postId: String) {

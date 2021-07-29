@@ -1,10 +1,12 @@
 package com.example.you.util
 
+import com.google.firebase.FirebaseException
+import com.google.firebase.firestore.FirebaseFirestoreException
 import dagger.Provides
 import retrofit2.HttpException
 
 class ResponseHandler {
-    fun <T> handleException(e: Exception, data: T? = null): Resource<T> {
+    fun <T> handleException(e: FirebaseFirestoreException, data: T? = null): Resource<T> {
         return when (e) {
             is HttpException -> Resource.Error("Http Exception", data)
             is NullPointerException -> Resource.Error("Null pointer exception", data)
@@ -20,7 +22,7 @@ class ResponseHandler {
         return Resource.Error("Unknown Exception!", data)
     }
 
-    fun <T> handleLoading(data: T? = null): Resource<T> {
+    fun <T> handleLoading(): Resource<T> {
         return Resource.Loading()
     }
 }

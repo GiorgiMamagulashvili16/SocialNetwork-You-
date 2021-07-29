@@ -128,10 +128,7 @@ class PostRepositoryImp @Inject constructor(
             }.await()
             Resource.Success(isLiked)
 
-            Log.d("HEUJEU", "${isLiked}")
-            Resource.Success(isLiked)
         } catch (e: Exception) {
-            Log.d("HEUJEUEE", "${e}")
             Resource.Error(e.toString())
         }
 

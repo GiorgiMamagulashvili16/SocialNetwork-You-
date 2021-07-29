@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
@@ -92,7 +93,7 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
                     Snackbar.LENGTH_INDEFINITE
                 ).apply {
                     setAction(getString(string.ok)) {
-                        requestMediaPermissions(permissionsLauncher)
+                        requestMediaPermissions(mediaLocationLauncher)
                     }
                 }.show()
             }
@@ -105,10 +106,10 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
                 Snackbar.LENGTH_INDEFINITE
             ).apply {
                 setAction(getString(string.ok)) {
-                    requestMediaPermissions(permissionsLauncher)
+                    requestMediaPermissions(mediaLocationLauncher)
                 }
             }.show()
-            else -> requestMediaPermissions(permissionsLauncher)
+            else -> requestMediaPermissions(mediaLocationLauncher)
         }
     }
 
@@ -158,4 +159,13 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
             }
         )
     }
+    private val mediaLocationLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perm ->
+            if (perm[Manifest.permission.CAMERA] == true && perm[Manifest.permission.READ_EXTERNAL_STORAGE] == true &&
+                perm[Manifest.permission.WRITE_EXTERNAL_STORAGE] == true
+            ) {
+                openMedia()
+            }
+        }
+
 }

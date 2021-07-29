@@ -14,12 +14,16 @@
             android:id="@+id/action_splashFragment_to_logInFragment"
             app:destination="@id/logInFragment"
             app:popUpTo="@id/splashFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
         <action
             android:id="@+id/action_splashFragment_to_dashboardFragment"
             app:destination="@id/dashboardFragment"
             app:popUpTo="@id/splashFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
@@ -39,12 +43,16 @@
         tools:layout="@layout/log_in_fragment">
         <action
             android:id="@+id/action_logInFragment_to_registrationFragment"
-            app:destination="@id/registrationFragment" />
+            app:destination="@id/registrationFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
         <action
             android:id="@+id/action_logInFragment_to_dashboardFragment"
             app:destination="@id/dashboardFragment"
             app:popUpTo="@id/logInFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"/>
     </fragment>
     <fragment
         android:id="@+id/dashboardFragment"
@@ -53,11 +61,15 @@
         tools:layout="@layout/dashboard_fragment"/>
     <action
         android:id="@+id/action_global_dashboardFragment"
-        app:destination="@id/dashboardFragment" />
+        app:destination="@id/dashboardFragment"
+        app:enterAnim="@android:anim/fade_in"
+        app:exitAnim="@android:anim/fade_out"/>
     <action
         android:id="@+id/action_global_logInFragment"
         app:destination="@id/logInFragment"
         app:popUpTo="@id/dashboardFragment"
-        app:popUpToInclusive="true" />
+        app:popUpToInclusive="true"
+        app:enterAnim="@android:anim/fade_in"
+        app:exitAnim="@android:anim/fade_out"/><action android:id="@+id/action_global_registrationFragment" app:destination="@id/registrationFragment"/>
 
 </navigation>

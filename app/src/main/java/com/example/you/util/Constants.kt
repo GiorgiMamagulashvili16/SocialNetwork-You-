@@ -16,7 +16,7 @@ object Constants {
     const val POST_TYPE_FIELD = "postType"
     const val TIME_FIELD = "time"
 
-    const val DRAWER_LOG_OUT_INDEX = 5
+    const val DRAWER_LOG_OUT_INDEX = 6
 
     const val POST_PAGE_SIZE = 5
 

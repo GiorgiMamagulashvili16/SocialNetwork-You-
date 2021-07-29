@@ -1,6 +1,7 @@
 package com.example.you.ui.fragments.dashboard
 
 import android.Manifest
+import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +20,7 @@ import com.example.you.databinding.DashboardFragmentBinding
 import com.example.you.extensions.getShapeableImage
 import com.example.you.models.drawer.DrawerItem
 import com.example.you.ui.base.BaseFragment
+import com.example.you.util.ConnectionLiveData
 import com.example.you.util.Constants.DEFAULT_DRAWER_ITEM
 import com.example.you.util.Constants.DRAWER_LOG_OUT_INDEX
 import com.example.you.util.Constants.UNDERLINED_DRAWER_ITEM
@@ -35,6 +37,7 @@ class DashboardFragment :
     BaseFragment<DashboardFragmentBinding>(DashboardFragmentBinding::inflate) {
     private val viewModel: DashboardViewModel by viewModels()
     private val drawerAdapter: DrawerAdapter by lazy { DrawerAdapter() }
+    private var isInternetConnection = true
 
     private lateinit var navController: NavController
 
@@ -43,10 +46,13 @@ class DashboardFragment :
     }
 
     private fun init() {
+        observeInternetConnection()
+        locationPermissionsRequest()
         initToolbar()
         initDrawer()
         setListeners()
         observeCurUser()
+
         lifecycleScope.launch {
             viewModel.getUser()
         }
@@ -55,8 +61,8 @@ class DashboardFragment :
         navController = host.findNavController()
     }
 
-    private fun initToolbar() {
 
+    private fun initToolbar() {
         (requireActivity() as AppCompatActivity).apply {
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
             supportActionBar?.setDisplayShowCustomEnabled(true)
@@ -64,6 +70,13 @@ class DashboardFragment :
             supportActionBar?.title = null
         }
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
+
+    }
+
+    private fun observeInternetConnection() {
+        ConnectionLiveData(requireContext()).observe(viewLifecycleOwner, {
+            isInternetConnection = it
+        })
     }
 
     private fun observeCurUser() {
@@ -74,9 +87,11 @@ class DashboardFragment :
             binding.tvToolbarUserName.text = it
         })
     }
+
     private fun locationPermissionsRequest() {
         when {
-            hasFineLocationPermission() && hasCoarseLocationPermission() -> { }
+            hasFineLocationPermission() && hasCoarseLocationPermission() -> {
+            }
             ActivityCompat.shouldShowRequestPermissionRationale(
                 requireActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -177,15 +192,23 @@ class DashboardFragment :
             )
         )
         drawerAdapter.onMenuClick = {
-            it?.let {
-                it.action?.let { action -> navController.navigate(action) }
+            if (isInternetConnection) {
+                it?.let {
+                    it.action?.let { action -> navController.navigate(action) }
+                    binding.root.closeDrawer(GravityCompat.START)
+                }
+            } else {
+                showErrorDialog("No Internet Connection")
             }
+
         }
         drawerAdapter.onLogOutClick = {
+            d("indindind", "$it")
             if (it == DRAWER_LOG_OUT_INDEX) {
                 FirebaseAuth.getInstance().signOut()
                 findNavController().navigate(R.id.action_global_logInFragment)
             }
         }
     }
+
 }

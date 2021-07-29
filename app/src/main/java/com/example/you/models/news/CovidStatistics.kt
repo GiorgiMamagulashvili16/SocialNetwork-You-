@@ -13,5 +13,6 @@ data class CovidStatistics(
     val testsPerOneMillion: Number?,
     val todayCases: Number?,
     val todayDeaths: Number?,
+    val todayRecovered: Number?,
     val updated: Number?
 )

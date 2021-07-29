@@ -1,9 +1,12 @@
 package com.example.you.ui.fragments.my_profile.edit_profile
 
+import android.Manifest
 import android.net.Uri
 import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.canhub.cropper.CropImageContract
@@ -15,7 +18,9 @@ import com.example.you.extensions.setRandomCover
 import com.example.you.extensions.slideUp
 import com.example.you.models.user.ProfileUpdate
 import com.example.you.ui.base.BaseFragment
+import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Resource
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -98,7 +103,7 @@ class EditProfileFragment :
         binding.apply {
             ivCoverImage.setRandomCover()
             btnAddProfileImage.setOnClickListener {
-                addProfileImage()
+                mediaPermissionRequest()
             }
             btnSave.setOnClickListener {
                 updateProfile()
@@ -110,15 +115,18 @@ class EditProfileFragment :
         val username = binding.etUserName.text.toString()
         val desc = binding.etDescription.text.toString()
         d("PROFILE IMAGE IN REPO", "$profileImageUri")
-        if (profileImageUri == null) {
-            val profileUpdate =
-                ProfileUpdate(FirebaseAuth.getInstance().uid!!, username, desc, null)
-            viewModel.editUserInfo(profileUpdate)
-        } else {
-            val profileUpdate =
-                ProfileUpdate(FirebaseAuth.getInstance().uid!!, username, desc, profileImageUri)
-            viewModel.editUserInfo(profileUpdate)
-        }
+        val profileUpdate =
+            ProfileUpdate(FirebaseAuth.getInstance().uid!!, username, desc, profileImageUri)
+        viewModel.editUserInfo(profileUpdate)
+//        if (profileImageUri == null) {
+//            val profileUpdate =
+//                ProfileUpdate(FirebaseAuth.getInstance().uid!!, username, desc, null)
+//            viewModel.editUserInfo(profileUpdate)
+//        } else {
+//            val profileUpdate =
+//                ProfileUpdate(FirebaseAuth.getInstance().uid!!, username, desc, profileImageUri)
+//            viewModel.editUserInfo(profileUpdate)
+//        }
 
 
     }
@@ -141,5 +149,47 @@ class EditProfileFragment :
             }
         }
     }
+    private fun mediaPermissionRequest() {
+        when {
+            hasCameraPermission() && hasReadExtStoragePermission() && hasWriteExtStoragePermission() -> {
+                addProfileImage()
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.CAMERA
+            ) -> {
+                Snackbar.make(
+                    binding.root,
+                    getString(string.app_needs_this_permission),
+                    Snackbar.LENGTH_INDEFINITE
+                ).apply {
+                    setAction(getString(string.ok)) {
+                        requestMediaPermissions(mediaLocationLauncher)
+                    }
+                }.show()
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) -> Snackbar.make(
+                binding.root,
+                getString(string.app_needs_this_permission),
+                Snackbar.LENGTH_INDEFINITE
+            ).apply {
+                setAction(getString(string.ok)) {
+                    requestMediaPermissions(mediaLocationLauncher)
+                }
+            }.show()
+            else -> requestMediaPermissions(mediaLocationLauncher)
+        }
+    }
+    private val mediaLocationLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perm ->
+            if (perm[Manifest.permission.CAMERA] == true && perm[Manifest.permission.READ_EXTERNAL_STORAGE] == true &&
+                perm[Manifest.permission.WRITE_EXTERNAL_STORAGE] == true
+            ) {
+                addProfileImage()
+            }
+        }
 
 }
