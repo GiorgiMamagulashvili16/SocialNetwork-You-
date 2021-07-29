@@ -1,8 +1,10 @@
 package com.example.you.ui.fragments.dashboard
 
+import android.Manifest
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +22,7 @@ import com.example.you.ui.base.BaseFragment
 import com.example.you.util.Constants.DEFAULT_DRAWER_ITEM
 import com.example.you.util.Constants.DRAWER_LOG_OUT_INDEX
 import com.example.you.util.Constants.UNDERLINED_DRAWER_ITEM
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -71,7 +74,40 @@ class DashboardFragment :
             binding.tvToolbarUserName.text = it
         })
     }
-
+    private fun locationPermissionsRequest() {
+        when {
+            hasFineLocationPermission() && hasCoarseLocationPermission() -> { }
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) -> {
+                Snackbar.make(
+                    binding.root,
+                    getString(string.app_needs_this_permission),
+                    Snackbar.LENGTH_INDEFINITE
+                ).apply {
+                    setAction(getString(string.ok)) {
+                        requestLocationPermissions(permissionsLauncher)
+                    }
+                }.show()
+            }
+            ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) -> {
+                Snackbar.make(
+                    binding.root,
+                    getString(string.app_needs_this_permission),
+                    Snackbar.LENGTH_INDEFINITE
+                ).apply {
+                    setAction(getString(string.ok)) {
+                        requestLocationPermissions(permissionsLauncher)
+                    }
+                }.show()
+            }
+            else -> requestLocationPermissions(permissionsLauncher)
+        }
+    }
 
     private fun setListeners() {
         binding.apply {

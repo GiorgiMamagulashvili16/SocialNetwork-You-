@@ -29,7 +29,6 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
     }
 
     private fun init() {
-        locationPermissionsRequest()
         setListeners()
         observe()
         (requireActivity() as AppCompatActivity).supportActionBar?.hide()
@@ -50,14 +49,14 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
         }
         binding.tvRegister.setOnClickListener {
             locationPermissionsRequest()
-            findNavController().navigate(R.id.action_logInFragment_to_registrationFragment)
+
         }
     }
 
     private fun locationPermissionsRequest() {
         when {
             hasFineLocationPermission() && hasCoarseLocationPermission() -> {
-
+                findNavController().navigate(R.id.action_logInFragment_to_registrationFragment)
             }
             ActivityCompat.shouldShowRequestPermissionRationale(
                 requireActivity(),
@@ -91,14 +90,6 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
         }
     }
 
-
-//    override fun onStart() {
-//        super.onStart()
-//        val user = Firebase.auth.currentUser
-//        if (user != null) {
-//            findNavController().navigate(R.id.action_logInFragment_to_dashboardFragment)
-//        }
-//    }
 
     private fun logIn() {
         val email = binding.etEmail.text.toString()
