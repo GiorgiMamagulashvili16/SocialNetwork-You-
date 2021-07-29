@@ -38,8 +38,9 @@ object AppModule {
     fun provideAuthRepo(
         auth: FirebaseAuth,
         storage: FirebaseStorage,
-        fireStore: FirebaseFirestore
-    ): AuthRepository = AuthRepositoryImpl(auth, storage, fireStore)
+        fireStore: FirebaseFirestore,
+        handler: ResponseHandler
+    ): AuthRepository = AuthRepositoryImpl(auth, storage, fireStore,handler)
 
     @Provides
     @Singleton

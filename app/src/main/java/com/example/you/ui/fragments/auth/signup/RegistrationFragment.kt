@@ -75,6 +75,7 @@ class RegistrationFragment :
                     findNavController().navigate(R.id.action_registrationFragment_to_logInFragment)
                 }
                 is Resource.Error -> {
+                    d("LogginError", "${it.errorMessage}")
                     it.errorMessage?.let { message -> showErrorDialog(message) }
                     dismissLinearLoadingDialog()
                 }

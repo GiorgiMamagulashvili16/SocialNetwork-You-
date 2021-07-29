@@ -1,28 +1,22 @@
 package com.example.you.util
 
-import com.google.firebase.FirebaseException
-import com.google.firebase.firestore.FirebaseFirestoreException
-import dagger.Provides
-import retrofit2.HttpException
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 
 class ResponseHandler {
-    fun <T> handleException(e: FirebaseFirestoreException, data: T? = null): Resource<T> {
+    fun <T> handleException(e: Exception): Resource<T> {
         return when (e) {
-            is HttpException -> Resource.Error("Http Exception", data)
-            is NullPointerException -> Resource.Error("Null pointer exception", data)
-            else -> Resource.Error("Unknown exception", data)
+            is FirebaseAuthInvalidUserException -> Resource.Error("User Information Is Not Correct or The User May Have Been Deleted")
+            is FirebaseAuthInvalidCredentialsException -> Resource.Error("Email Address is badly formatted")
+            is FirebaseAuthWeakPasswordException -> Resource.Error("Password Is Less Than 6 chars")
+            is FirebaseAuthUserCollisionException -> Resource.Error("This Email is already used")
+            else -> Resource.Error("Unknown exception")
         }
     }
 
     fun <T> handleSuccess(data: T): Resource<T> {
         return Resource.Success(data)
-    }
-
-    fun <T> handleDefaultException(data: T? = null): Resource<T> {
-        return Resource.Error("Unknown Exception!", data)
-    }
-
-    fun <T> handleLoading(): Resource<T> {
-        return Resource.Loading()
     }
 }

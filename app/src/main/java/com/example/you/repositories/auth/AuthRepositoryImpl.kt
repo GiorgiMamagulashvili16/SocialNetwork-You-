@@ -5,6 +5,7 @@ import android.net.Uri
 import com.example.you.models.user.UserModel
 import com.example.you.util.Constants.USER_COLLECTION_NAME
 import com.example.you.util.Resource
+import com.example.you.util.ResponseHandler
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,7 +18,8 @@ import javax.inject.Inject
 class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
     private val storage: FirebaseStorage,
-    private val fireStore: FirebaseFirestore
+    private val fireStore: FirebaseFirestore,
+    private val handler:ResponseHandler
 ) : AuthRepository {
     private val users = fireStore.collection(USER_COLLECTION_NAME)
     override suspend fun register(
@@ -37,9 +39,9 @@ class AuthRepositoryImpl @Inject constructor(
                 profileImageUrl = imageUrl,
             )
             users.document(uid).set(user).await()
-            Resource.Success(result)
+            handler.handleSuccess(result)
         } catch (e: Exception) {
-            Resource.Error(e.toString())
+            handler.handleException(e)
         }
     }
 
@@ -47,9 +49,9 @@ class AuthRepositoryImpl @Inject constructor(
         withContext(Dispatchers.IO) {
             return@withContext try {
                 val result = auth.signInWithEmailAndPassword(email, password).await()
-                Resource.Success(result)
+               handler.handleSuccess(result)
             } catch (e: Exception) {
-                Resource.Error(e.toString())
+              handler.handleException(e)
             }
         }
 

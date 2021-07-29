@@ -70,7 +70,6 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
                     findNavController().navigate(R.id.action_logInFragment_to_dashboardFragment)
                 }
                 is Resource.Error -> {
-                    d("LogginError", "${it.errorMessage}")
                     it.errorMessage?.let { message -> showErrorDialog(message) }
                     dismissLinearLoadingDialog()
                 }
