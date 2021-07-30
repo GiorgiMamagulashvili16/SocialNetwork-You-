@@ -9,7 +9,7 @@ class ResponseHandler {
     fun <T> handleException(e: Exception): Resource<T> {
         return when (e) {
             is FirebaseAuthInvalidUserException -> Resource.Error("User Information Is Not Correct or The User May Have Been Deleted")
-            is FirebaseAuthInvalidCredentialsException -> Resource.Error("Email Address is badly formatted")
+            is FirebaseAuthInvalidCredentialsException -> Resource.Error("Email Address is badly formatted or password is incorrect")
             is FirebaseAuthWeakPasswordException -> Resource.Error("Password Is Less Than 6 chars")
             is FirebaseAuthUserCollisionException -> Resource.Error("This Email is already used")
             else -> Resource.Error("Unknown exception")
