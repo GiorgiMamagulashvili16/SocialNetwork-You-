@@ -137,5 +137,5 @@
     <fragment
         android:id="@+id/newsFragment"
         android:name="com.example.you.ui.fragments.news.NewsFragment"
-        android:label="NewsFragment" /><action android:id="@+id/action_global_newsFragment" app:destination="@id/newsFragment"/>
+        android:label="NewsFragment" /><action android:id="@+id/action_global_newsFragment" app:destination="@id/newsFragment"/><action android:id="@+id/action_global_bottomSheetLikes" app:destination="@id/bottomSheetLikes"/>
 </navigation>

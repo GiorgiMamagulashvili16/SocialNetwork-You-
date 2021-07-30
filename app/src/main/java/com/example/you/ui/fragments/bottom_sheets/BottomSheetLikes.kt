@@ -44,7 +44,6 @@ class BottomSheetLikes : BottomSheetDialogFragment() {
         viewModel.likedByResponse.observe(viewLifecycleOwner, {
             when (it) {
                 is Resource.Success -> {
-                    d("RECREC", "${it.data}")
                     if (it.data!!.isEmpty()) {
                         binding.tvNoLikes.isVisible = true
                     } else {
@@ -52,7 +51,7 @@ class BottomSheetLikes : BottomSheetDialogFragment() {
                     }
                 }
                 is Resource.Error -> {
-                    d("RECREC", "${it.errorMessage}")
+                    d("likesRsponse", "${it.errorMessage}")
                 }
                 is Resource.Loading -> {
 

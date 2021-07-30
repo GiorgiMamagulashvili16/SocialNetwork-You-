@@ -34,7 +34,6 @@ class ChatFragment : BaseFragment<ChatFragmentBinding>(ChatFragmentBinding::infl
     private val chatAdapter: ChatAdapter by lazy { ChatAdapter() }
     private val args: ChatFragmentArgs by navArgs()
 
-    private val chatColl = FirebaseFirestore.getInstance().collection("chat")
     override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
         init()
     }
@@ -50,8 +49,8 @@ class ChatFragment : BaseFragment<ChatFragmentBinding>(ChatFragmentBinding::infl
             safeArgs.receiverId
         }
         lifecycleScope.launch {
-            if (arg != null) {
-                viewModel.readMessages(arg)
+            arg?.let {
+                viewModel.readMessages(it)
             }
         }
         lifecycleScope.launch {

@@ -132,7 +132,7 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) -> {
                 Snackbar.make(
-                    binding.root,
+                    requireView(),
                     getString(string.app_needs_this_permission),
                     Snackbar.LENGTH_INDEFINITE
                 ).apply {
@@ -146,7 +146,7 @@ class AddPostFragment : BaseFragment<AddPostFragmentBinding>(AddPostFragmentBind
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) -> {
                 Snackbar.make(
-                    binding.root,
+                    requireView(),
                     getString(string.app_needs_this_permission),
                     Snackbar.LENGTH_INDEFINITE
                 ).apply {

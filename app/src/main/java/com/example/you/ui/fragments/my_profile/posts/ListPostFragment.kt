@@ -16,7 +16,6 @@ import com.example.you.extensions.createInfoSnackBar
 import com.example.you.extensions.setDialog
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
-import com.example.you.ui.fragments.my_profile.ProfileFragmentDirections
 import com.example.you.ui.fragments.my_profile.ProfileViewModel
 import com.example.you.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
@@ -127,6 +126,11 @@ class ListPostFragment : BaseFragment<ListPostFragmentBinding>(ListPostFragmentB
         }
         postAdapter.onCommentClick = {
             showAddCommentDialog(it)
+        }
+        postAdapter.onLikedByClick = {
+            findNavController().navigate(
+                DashboardGraphDirections.actionGlobalBottomSheetLikes(it.toTypedArray())
+            )
         }
     }
 }

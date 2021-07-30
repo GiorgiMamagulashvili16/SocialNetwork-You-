@@ -182,5 +182,12 @@ class OtherUserProfileFragment :
         postAdapter.onCommentClick = {
             showAddCommentDialog(it)
         }
+        postAdapter.onLikedByClick = { likes ->
+            val action =
+                OtherUserProfileFragmentDirections.actionOtherUserProfileFragmentToBottomSheetLikes(
+                    likes.toTypedArray()
+                )
+            Navigation.findNavController(requireView()).navigate(action)
+        }
     }
 }

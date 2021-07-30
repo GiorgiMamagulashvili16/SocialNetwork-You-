@@ -5,12 +5,15 @@ import com.example.you.models.post.Comment
 import com.example.you.models.post.Post
 import com.example.you.models.user.UserModel
 import com.example.you.util.Constants.COMMENTS_COLLECTION_NAME
+import com.example.you.util.Constants.DATE_FIELD
 import com.example.you.util.Constants.POSTS_COLLECTION_NAME
 import com.example.you.util.Constants.USER_COLLECTION_NAME
 import com.example.you.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
@@ -92,9 +95,13 @@ class PostRepositoryImp @Inject constructor(
     override suspend fun getCommentForPost(postId: String): Resource<List<Comment>> =
         withContext(Dispatchers.IO) {
             return@withContext try {
-                val allComments = commentCollection.whereEqualTo("postId", postId).get().await()
-                    .toObjects(Comment::class.java)
-                Resource.Success(allComments)
+                val result = mutableListOf<Comment>()
+                commentCollection.orderBy(DATE_FIELD, Query.Direction.DESCENDING).get().await()
+                    .toObjects<Comment>().forEach { comment ->
+                        if (comment.postId == postId) result.add(comment)
+
+                    }
+                Resource.Success(result)
             } catch (e: Exception) {
                 Resource.Error(e.toString())
             }

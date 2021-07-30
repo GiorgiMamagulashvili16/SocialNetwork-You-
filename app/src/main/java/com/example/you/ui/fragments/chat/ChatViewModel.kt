@@ -23,12 +23,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     private val chatRepository: ChatRepositoryImpl,
-    private val fireStore: FirebaseFirestore,
-    private val auth: FirebaseAuth,
-    private val postRepository: PostRepositoryImp
 ) : ViewModel() {
 
-    private val chatColl = fireStore.collection(CHAT_COLLECTION_NAME)
     private val _sendResponse by lazy {
         MutableLiveData<Resource<Any>>()
     }

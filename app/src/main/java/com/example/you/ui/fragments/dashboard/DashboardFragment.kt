@@ -88,7 +88,7 @@ class DashboardFragment :
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) -> {
                 Snackbar.make(
-                    binding.root,
+                    requireView(),
                     getString(string.app_needs_this_permission),
                     Snackbar.LENGTH_INDEFINITE
                 ).apply {
@@ -102,7 +102,7 @@ class DashboardFragment :
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) -> {
                 Snackbar.make(
-                    binding.root,
+                    requireView(),
                     getString(string.app_needs_this_permission),
                     Snackbar.LENGTH_INDEFINITE
                 ).apply {
@@ -182,10 +182,10 @@ class DashboardFragment :
                 )
             )
         )
-        drawerAdapter.onMenuClick = {
+        drawerAdapter.onMenuClick = { drawer ->
             if (hasInternetConnection == true) {
-                it?.let {
-                    it.action?.let { action -> navController.navigate(action) }
+                drawer?.let {
+                    drawer.action?.let { action -> navController.navigate(action) }
                     binding.root.closeDrawer(GravityCompat.START)
                 }
             } else {
@@ -193,9 +193,8 @@ class DashboardFragment :
             }
 
         }
-        drawerAdapter.onLogOutClick = {
-            d("indindind", "$it")
-            if (it == DRAWER_LOG_OUT_INDEX) {
+        drawerAdapter.onLogOutClick = {index ->
+            if (index == DRAWER_LOG_OUT_INDEX) {
                 FirebaseAuth.getInstance().signOut()
                 findNavController().navigate(R.id.action_global_logInFragment)
             }

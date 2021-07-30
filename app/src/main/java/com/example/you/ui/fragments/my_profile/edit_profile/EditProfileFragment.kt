@@ -118,17 +118,6 @@ class EditProfileFragment :
         val profileUpdate =
             ProfileUpdate(FirebaseAuth.getInstance().uid!!, username, desc, profileImageUri)
         viewModel.editUserInfo(profileUpdate)
-//        if (profileImageUri == null) {
-//            val profileUpdate =
-//                ProfileUpdate(FirebaseAuth.getInstance().uid!!, username, desc, null)
-//            viewModel.editUserInfo(profileUpdate)
-//        } else {
-//            val profileUpdate =
-//                ProfileUpdate(FirebaseAuth.getInstance().uid!!, username, desc, profileImageUri)
-//            viewModel.editUserInfo(profileUpdate)
-//        }
-
-
     }
 
     private fun addProfileImage() {

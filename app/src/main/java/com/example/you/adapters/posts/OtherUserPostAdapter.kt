@@ -6,7 +6,6 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.you.R
 import com.example.you.databinding.RowOtherUserPostItemBinding
 import com.example.you.extensions.getImageFromUrl
 import com.example.you.models.post.Post
@@ -18,6 +17,7 @@ class OtherUserPostAdapter : RecyclerView.Adapter<OtherUserPostAdapter.PostViewH
     lateinit var onViewCommentClick: onViewCommentClick
     lateinit var onLikeClick: onLikeClick
     lateinit var onCommentClick: onCommentClick
+    lateinit var onLikedByClick: onLikedByClick
 
     inner class PostViewHolder(val binding: RowOtherUserPostItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -47,8 +47,13 @@ class OtherUserPostAdapter : RecyclerView.Adapter<OtherUserPostAdapter.PostViewH
                 btnLike.setOnClickListener {
                     if (!post.likeLoading) onLikeClick.invoke(post, absoluteAdapterPosition)
                 }
+                btnLike.isEnabled = !post.likeLoading
+
                 btnComment.setOnClickListener {
                     onCommentClick.invoke(post.postId)
+                }
+                tvLikedBy.setOnClickListener {
+                    onLikedByClick.invoke(post.likedBy)
                 }
             }
         }
@@ -69,7 +74,7 @@ class OtherUserPostAdapter : RecyclerView.Adapter<OtherUserPostAdapter.PostViewH
             RowOtherUserPostItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
-    override fun onBindViewHolder(holder: PostViewHolder, position: Int)  = holder.onBind()
+    override fun onBindViewHolder(holder: PostViewHolder, position: Int) = holder.onBind()
 
     override fun getItemCount(): Int = differ.currentList.size
 

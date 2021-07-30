@@ -6,7 +6,6 @@ import androidx.paging.PagingState
 import com.example.you.models.post.Post
 import com.example.you.models.user.UserModel
 import com.example.you.util.Constants
-import com.example.you.util.Constants.AUTHOR_ID_FIELD
 import com.example.you.util.Constants.CURRENT_USER_LOCATION
 import com.example.you.util.Constants.DATE_FIELD
 import com.example.you.util.Constants.DISTANCE_RADIUS

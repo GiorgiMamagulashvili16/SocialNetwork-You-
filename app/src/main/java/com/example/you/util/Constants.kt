@@ -12,8 +12,6 @@ object Constants {
     const val POSTS_COLLECTION_NAME = "posts"
     const val COMMENTS_COLLECTION_NAME = "comments"
     const val CHAT_COLLECTION_NAME = "chat"
-    const val AUTHOR_ID_FIELD=  "authorId"
-    const val POST_TYPE_FIELD = "postType"
     const val TIME_FIELD = "time"
     const val DATE_FIELD = "date"
 
@@ -33,7 +31,6 @@ object Constants {
     const val CHANNEL_NAME = "chat_channel"
     const val NOTIFICATION_TITLE = "title"
     const val NOTIFICATION_MESSAGE = "message"
-    const val NOTIFICATION_RECEIVER_ID_KEY = "senderId"
     const val TOKEN = "token"
     const val SHARED_PREF_NAME ="user_preference"
 

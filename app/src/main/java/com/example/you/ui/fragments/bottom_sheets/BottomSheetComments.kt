@@ -2,6 +2,7 @@ package com.example.you.ui.fragments.bottom_sheets
 
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log.d
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,7 +57,7 @@ class BottomSheetComments : BottomSheetDialogFragment() {
                         commentAdapter.differ.submitList(it.data)
                 }
                 is Resource.Error -> {
-
+                    d("commentObserveError", "${it.errorMessage}")
                 }
                 is Resource.Loading -> Unit
 
@@ -105,7 +106,7 @@ class BottomSheetComments : BottomSheetDialogFragment() {
                 deleteCommentDialog!!.dismiss()
             }
         }
-        deleteCommentDialog!!.show()
+        deleteCommentDialog?.show()
     }
 
     override fun onDestroyView() {

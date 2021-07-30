@@ -23,7 +23,6 @@ class UserAdapter : RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
         fun onBind() {
             val user = differ.currentList[absoluteAdapterPosition]
             binding.apply {
-                d("sdsadd","$user")
                 ivProfileImage.getShapeableImage(user.profileImageUrl)
                 tvUserName.text = user.userName
                 root.setOnClickListener {
