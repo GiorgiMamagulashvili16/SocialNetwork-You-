@@ -39,7 +39,7 @@ class DashboardFragment :
     BaseFragment<DashboardFragmentBinding>(DashboardFragmentBinding::inflate) {
     private val viewModel: DashboardViewModel by viewModels()
     private val drawerAdapter: DrawerAdapter by lazy { DrawerAdapter() }
-    private var permDialog: Dialog? = null
+
     private lateinit var navController: NavController
 
     override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
@@ -119,17 +119,6 @@ class DashboardFragment :
             }
             else -> requestLocationPermissions(permissionsLauncher)
         }
-    }
-
-    private fun showPermDialog(message: String) {
-        permDialog = Dialog(requireContext())
-        val dialogBinding = DialogErrorBinding.inflate(layoutInflater)
-        permDialog?.setDialog(dialogBinding)
-        dialogBinding.btnOk.setOnClickListener {
-            requestLocationPermissions(permissionsLauncher)
-        }
-        dialogBinding.tvErrorText.text = message
-        permDialog?.show()
     }
 
     private fun setListeners() {

@@ -40,7 +40,6 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
     private val postAdapter: PostPagingAdapter by lazy { PostPagingAdapter() }
     private val viewModel: RadiusViewModel by viewModels()
     private var currentPostIndex: Int? = null
-    private var permDialog: Dialog? = null
 
 
     override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
@@ -113,17 +112,6 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
                 getLocation()
             }
         }
-    private fun showPermDialog(message: String) {
-        permDialog = Dialog(requireContext())
-        val dialogBinding = DialogErrorBinding.inflate(layoutInflater)
-        permDialog?.setDialog(dialogBinding)
-        dialogBinding.btnOk.setOnClickListener {
-            requestLocationPermissions(permissionsLauncher)
-        }
-        dialogBinding.tvErrorText.text = message
-        permDialog?.show()
-    }
-
     private fun getLocation() {
         locationRequest = LocationRequest.create().apply {
             interval = TimeUnit.SECONDS.toMillis(60)
@@ -153,7 +141,7 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
         }
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
-            locationCallback,
+            locationCallback!!,
             Looper.getMainLooper()
         )
     }
