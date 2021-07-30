@@ -1,7 +1,7 @@
 package com.example.you.ui.fragments.dashboard
 
 import android.Manifest
-import android.util.Log.d
+import android.app.Dialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +17,9 @@ import com.example.you.DashboardGraphDirections
 import com.example.you.R
 import com.example.you.adapters.drawer.DrawerAdapter
 import com.example.you.databinding.DashboardFragmentBinding
+import com.example.you.databinding.DialogErrorBinding
 import com.example.you.extensions.getShapeableImage
+import com.example.you.extensions.setDialog
 import com.example.you.models.drawer.DrawerItem
 import com.example.you.ui.base.BaseFragment
 import com.example.you.util.Constants.DEFAULT_DRAWER_ITEM
@@ -26,6 +28,7 @@ import com.example.you.util.Constants.UNDERLINED_DRAWER_ITEM
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 typealias drawable = R.drawable
@@ -36,7 +39,7 @@ class DashboardFragment :
     BaseFragment<DashboardFragmentBinding>(DashboardFragmentBinding::inflate) {
     private val viewModel: DashboardViewModel by viewModels()
     private val drawerAdapter: DrawerAdapter by lazy { DrawerAdapter() }
-
+    private var permDialog: Dialog? = null
     private lateinit var navController: NavController
 
     override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
@@ -44,7 +47,10 @@ class DashboardFragment :
     }
 
     private fun init() {
-        locationPermissionsRequest()
+        lifecycleScope.launch {
+            delay(1000)
+            locationPermissionsRequest()
+        }
         initToolbar()
         initDrawer()
         setListeners()
@@ -88,7 +94,7 @@ class DashboardFragment :
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) -> {
                 Snackbar.make(
-                    requireView(),
+                    binding.root,
                     getString(string.app_needs_this_permission),
                     Snackbar.LENGTH_INDEFINITE
                 ).apply {
@@ -102,7 +108,7 @@ class DashboardFragment :
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) -> {
                 Snackbar.make(
-                    requireView(),
+                    binding.root,
                     getString(string.app_needs_this_permission),
                     Snackbar.LENGTH_INDEFINITE
                 ).apply {
@@ -113,6 +119,17 @@ class DashboardFragment :
             }
             else -> requestLocationPermissions(permissionsLauncher)
         }
+    }
+
+    private fun showPermDialog(message: String) {
+        permDialog = Dialog(requireContext())
+        val dialogBinding = DialogErrorBinding.inflate(layoutInflater)
+        permDialog?.setDialog(dialogBinding)
+        dialogBinding.btnOk.setOnClickListener {
+            requestLocationPermissions(permissionsLauncher)
+        }
+        dialogBinding.tvErrorText.text = message
+        permDialog?.show()
     }
 
     private fun setListeners() {
@@ -193,7 +210,7 @@ class DashboardFragment :
             }
 
         }
-        drawerAdapter.onLogOutClick = {index ->
+        drawerAdapter.onLogOutClick = { index ->
             if (index == DRAWER_LOG_OUT_INDEX) {
                 FirebaseAuth.getInstance().signOut()
                 findNavController().navigate(R.id.action_global_logInFragment)

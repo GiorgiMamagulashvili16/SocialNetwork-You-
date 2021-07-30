@@ -1,6 +1,7 @@
 package com.example.you.ui.fragments.radius
 
 import android.Manifest
+import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Looper
 import android.util.Log
@@ -15,7 +16,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.you.adapters.posts.PostPagingAdapter
+import com.example.you.databinding.DialogErrorBinding
 import com.example.you.databinding.RadiusFragmentBinding
+import com.example.you.extensions.setDialog
 import com.example.you.ui.base.BaseFragment
 import com.example.you.ui.fragments.dashboard.string
 import com.example.you.util.Resource
@@ -23,6 +26,7 @@ import com.google.android.gms.location.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
@@ -31,11 +35,12 @@ import java.util.concurrent.TimeUnit
 class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding::inflate) {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback
+    private var locationCallback: LocationCallback? = null
 
     private val postAdapter: PostPagingAdapter by lazy { PostPagingAdapter() }
     private val viewModel: RadiusViewModel by viewModels()
     private var currentPostIndex: Int? = null
+    private var permDialog: Dialog? = null
 
 
     override fun start(inflater: LayoutInflater, viewGroup: ViewGroup?) {
@@ -43,7 +48,14 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
     }
 
     private fun init() {
-        locationPermissionsRequest()
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireContext())
+
+        lifecycleScope.launch {
+            delay(1000)
+            locationPermissionsRequest()
+        }
+
         initRecycle()
         observeAddCommentResponse()
         observePostLikes()
@@ -88,7 +100,7 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
                     Snackbar.LENGTH_INDEFINITE
                 ).apply {
                     setAction(getString(string.ok)) {
-                        requestLocationPermissions(permissionsLauncher)
+                        requestLocationPermissions(locationPermissionsLauncher)
                     }
                 }.show()
             }
@@ -101,10 +113,18 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
                 getLocation()
             }
         }
+    private fun showPermDialog(message: String) {
+        permDialog = Dialog(requireContext())
+        val dialogBinding = DialogErrorBinding.inflate(layoutInflater)
+        permDialog?.setDialog(dialogBinding)
+        dialogBinding.btnOk.setOnClickListener {
+            requestLocationPermissions(permissionsLauncher)
+        }
+        dialogBinding.tvErrorText.text = message
+        permDialog?.show()
+    }
 
     private fun getLocation() {
-        fusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(requireContext())
         locationRequest = LocationRequest.create().apply {
             interval = TimeUnit.SECONDS.toMillis(60)
             fastestInterval = TimeUnit.SECONDS.toMillis(30)
@@ -140,13 +160,15 @@ class RadiusFragment : BaseFragment<RadiusFragmentBinding>(RadiusFragmentBinding
 
     override fun onPause() {
         super.onPause()
-        val removeLocationUpdate =
-            fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-        removeLocationUpdate.addOnCompleteListener { task ->
-            if (task.isSuccessful)
-                Log.d("RemoveLocationUpdate", "successfully removed")
-            else
-                Log.d("RemoveLocationUpdate", "failure")
+        locationCallback?.let {
+            val removeLocationUpdate =
+                fusedLocationProviderClient.removeLocationUpdates(it)
+            removeLocationUpdate.addOnCompleteListener { task ->
+                if (task.isSuccessful)
+                    Log.d("RemoveLocationUpdate", "successfully removed")
+                else
+                    Log.d("RemoveLocationUpdate", "failure")
+            }
         }
     }
 

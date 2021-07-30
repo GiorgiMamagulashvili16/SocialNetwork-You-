@@ -52,6 +52,7 @@ class LogInFragment : BaseFragment<LogInFragmentBinding>(LogInFragmentBinding::i
         }
     }
 
+
     private fun logIn() {
         val email = binding.etEmail.text.toString()
         val password = binding.etPassword.text.toString()
